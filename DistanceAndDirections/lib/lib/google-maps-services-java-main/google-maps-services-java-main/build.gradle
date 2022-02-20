@@ -1,0 +1,204 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+import java.time.Duration
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.3'
+  }
+}
+
+
+plugins {
+    id 'com.github.ben-manes.versions' version '0.41.0'
+    id 'com.github.sherter.google-java-format' version '0.8'
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
+    id 'io.codearte.nexus-staging' version '0.30.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'com.github.sherter.google-java-format'
+
+group = 'com.google.maps'
+sourceCompatibility = 1.8
+version = '2.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+dependencies {
+    compileOnly 'com.google.appengine:appengine-api-1.0-sdk:2.0.3'
+    api 'com.squareup.okhttp3:okhttp:4.9.3'
+    api 'com.google.code.gson:gson:2.8.9'
+    api 'io.opencensus:opencensus-api:0.31.0'
+    implementation 'org.slf4j:slf4j-api:1.7.35'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.35'
+    testImplementation 'org.apache.commons:commons-lang3:3.12.0'
+    testImplementation 'org.json:json:20211205'
+    testImplementation 'io.opencensus:opencensus-impl:0.31.0'
+    testImplementation "org.mockito:mockito-inline:4.3.1"
+}
+
+task updateVersion(type: Copy) {
+    from('src') into "build/filtered/src"
+    filter(ReplaceTokens, tokens: [VERSION: project.version])
+}
+compileJava.source = "build/filtered/src/main/java"
+compileJava.dependsOn updateVersion
+
+compileJava {
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+compileTestJava {
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+// Propagate API Key system properties to test tasks
+tasks.withType(Test) {
+    systemProperty 'api.key', System.getProperty('api.key')
+    systemProperty 'client.id', System.getProperty('client.id')
+    systemProperty 'client.secret', System.getProperty('client.secret')
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+javadoc {
+    exclude '**/internal/**'
+    def currentJavaVersion = org.gradle.api.JavaVersion.current()
+}
+
+jacoco {
+    toolVersion = "0.8.2" // non-default version 0.8.2 required for OpenJDK 11 compatibility
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+ext.artifactId = 'google-maps-services'
+
+publishing {
+    publications {
+        MapsJavaUtils(MavenPublication) {
+            pom {
+                name = 'Java Client for Google Maps Platform Web Services'
+                description = 'Use the Google Maps Platform Web Services in Java! ' +
+                        'https://developers.google.com/maps/documentation/webservices/'
+                url = 'https://github.com/googlemaps/google-maps-services-java'
+
+                scm {
+                    url = 'scm:git@github.com:googlemaps/google-maps-services-java.git'
+                    connection = 'scm:git@github.com:googlemaps/google-maps-services-java.git'
+                    developerConnection = 'scm:git@github.com:googlemaps/google-maps-services-java.git'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+
+                organization {
+                    name = 'Google Inc'
+                    url = 'http://developers.google.com/maps'
+                }
+
+                developers {
+                    developer {
+                        id = 'markmcd'
+                        name = 'Mark McDonald'
+                    }
+                    developer {
+                        id = 'domesticmouse'
+                        name = 'Brett Morgan'
+                    }
+                    developer {
+                        id = 'broady'
+                        name = 'Chris Broadfoot'
+                    }
+                    developer {
+                        id = 'chrisarriola'
+                        name = 'Christopher Arriola'
+                    }
+                }
+            }
+            groupId group
+            artifactId project.ext.artifactId
+            version version
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/googlemaps/google-maps-services-java")
+            credentials {
+                username = 'googlemaps-bot'
+                password = githubPassword
+            }
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = sonatypeUsername
+            password = sonatypePassword
+            clientTimeout = Duration.ofSeconds(120)
+        }
+    }
+}
+
+nexusStaging {
+    username = sonatypeUsername
+    password = sonatypePassword
+    packageGroup = "com.google.maps"
+}
+
+signing {
+    sign publishing.publications.MapsJavaUtils
+}

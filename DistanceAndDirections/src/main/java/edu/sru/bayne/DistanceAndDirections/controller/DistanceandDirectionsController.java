@@ -67,7 +67,7 @@ public class DistanceandDirectionsController{
 	    search.setqDistance(DistanceMatrixAPI.getDistance(search.queryOrigAddress(), search.queryDestAddress()));
 	    System.out.println("Distance = " + search.getqDistance());
 	    // Call DistanceMatrixAPI to find and set distance
-	    // search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination()));
+	    search.setqDirections(DirectionsAPI.getDirections(search.queryOrigAddress(), search.queryDestAddress()));
 	    searchRepo.save(search);
 	    
 	   

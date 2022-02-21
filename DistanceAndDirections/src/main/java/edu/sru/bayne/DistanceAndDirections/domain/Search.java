@@ -206,6 +206,7 @@ public class Search {
 		
 		String magic = "";
 		magic += this.getStreet2() + this.getCity2() + this.getState2() + this.getZip2() + this.getCountry2();
+		magic = magic.replaceAll(",", " ");
 		magic = magic.replaceAll(" ", "%20");
 	
 		return magic;

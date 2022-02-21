@@ -5,14 +5,13 @@
 <title>Directions</title>
 </head>
 <body>
-	<div>
-	
-		<label for="start"><strong>Start: </strong></label>
-		<p id="start" th:text="${query.getOrigin()}"></p>
-		<label for="end"><strong>End: </strong></label>
-		<p id="end" th:text="${query.getDestination()}"></p>
 		<h2>Directions</h2>
+		<hr>
 		
+	<div>
+		<p id="start"><strong style="font-size:20px">Starting from: </strong><span th:text="${query.getOrigin()}"></span></p>
+		<p id="direct" th:text="${query.getqDirections()}">Directions Not Found</p>
+		<p id="end"><strong style="font-size:20px">Arriving at: </strong><span th:text="${query.getDestination()}"></span></p>
 	</div>
 	
 	

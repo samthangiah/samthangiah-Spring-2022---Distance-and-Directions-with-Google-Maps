@@ -149,6 +149,7 @@ public class DistanceMatrixAPI {
 		    strMileage = strMileage.trim();
 		    //remove the mi that is in the text string
 		    strMileage = strMileage.replace("mi","");
+		    strMileage = strMileage.replace(",", "");
 		    strMileage = strMileage.trim();
 		    //convert the mileage to a float
 		    distance = Float.valueOf(strMileage);
@@ -157,7 +158,13 @@ public class DistanceMatrixAPI {
 		}
 		catch (Exception e)
 		{
-		
+			System.out.println("Occurred at 2");
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		/*String xml = "<message>HELLO!</message>";

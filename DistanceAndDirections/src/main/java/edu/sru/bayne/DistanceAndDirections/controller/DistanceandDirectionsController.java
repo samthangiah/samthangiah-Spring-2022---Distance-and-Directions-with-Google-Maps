@@ -67,7 +67,7 @@ public class DistanceandDirectionsController{
 	    search.setqDistance(DistanceMatrixAPI.getDistance(search.queryOrigAddress(), search.queryDestAddress()));
 	    System.out.println("Distance = " + search.getqDistance());
 	    // Call DistanceMatrixAPI to find and set distance
-	    // search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination()));
+	    search.setqDirections(DirectionsAPI.getDirections(search.queryOrigAddress(), search.queryDestAddress()));
 	    searchRepo.save(search);
 	    
 	   
@@ -77,6 +77,17 @@ public class DistanceandDirectionsController{
 	    return "redirect:/distance-matrix";
 	}
 	
+	@RequestMapping("/find-directions/{id}")
+    public String pullDirections(@PathVariable("id") long id, Model model) {
+        Search search = searchRepo.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid query:" + id));
+        model.addAttribute("query", search);
+        
+        System.out.println(search.getOrigin());
+        System.out.println(search.getDestination());
+        //searchRepo.delete(search);
+        return "/directions";
+    }
 	
 	@GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {

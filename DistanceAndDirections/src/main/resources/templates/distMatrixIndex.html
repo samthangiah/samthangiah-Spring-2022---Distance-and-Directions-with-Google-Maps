@@ -30,7 +30,7 @@
                     <td th:text="${search.getOrigin()}"></td>
                     <td th:text="${search.getDestination()}"></td>
                     <td th:text="${search.getqDistance()}"></td>
-                    <td th:text="${search.getqDirections()}"></td>
+                    <td><a th:href="@{/find-directions/{id}(id=${search.getId()})}">Directions</a></td>
                     <td><a th:href="@{/delete/{id}(id=${search.getId()})}">Delete</a></td>
                 </tr>
             	</tbody>

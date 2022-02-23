@@ -8,7 +8,6 @@ public class Application {
 	
 	Table distanceTable;
 	
-	
 	//TEMP array to make adding test locations easier
 	String locationPairs[][] = 
 	{

@@ -12,7 +12,7 @@ public class Michael_Code_Test {
 			//Directions
 			testOne.printDistance();
 			
-			DataStore testTwo = new DataStore("Butler_PA", "SlipperyRock_PA");
+			DataStore testTwo = new DataStore("167HinchbergerRoad_Butler_PA_16002_US", "322NMcKeanSt,Butler,PA16001");
 			System.out.println("\nTest TWO Output the Input Variable\n" + "Start: " + testTwo.getInputStart() + "\nEnd: " + testTwo.getInputEnd() );
 			//Distance
 			testTwo.calcDistance();

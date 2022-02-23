@@ -19,7 +19,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.SAXException;
+import javax.xml.parsers.*;
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
+
 
 
 public class DirectionsAPI {
@@ -66,7 +71,8 @@ public class DirectionsAPI {
 			}
 			System.out.println(recDataSB.toString());
 			System.out.println(recDataSB);
-			Output = parseDirections(recDataSB.toString());
+			//Output = parseString(recDataSB.toString());
+			Output = recursiveStringParser(recDataSB.toString());
 		}
 		catch (IOException e)
 		{
@@ -86,43 +92,89 @@ public class DirectionsAPI {
 		//return Output;
 		
 		//Temporary Output to test HTML. Will remove once Output parses correctly
-		return "Temp from Directions API";
+		return Output;
 	}
 	
-	public static String parseDirections(String xmlIn) {
+	public static String parseString(String xmlIn) {
 		String output = "";
-		try
-		{	
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder Builder = factory.newDocumentBuilder();
-			Document Doc = Builder.parse(new ByteArrayInputStream(xmlIn.getBytes("UTF-8")));
-			NodeList instructionList = Doc.getElementsByTagName("html_instructions");
-			
-			for(int i=0; i < instructionList.getLength(); i++)
-			{	
-				Element instruction = (Element) instructionList.item(i);
-				//Error Segment
-				Node task = instruction.getAttributes().item(i);	//.getElementsByTagName("html_instructions").item(i);
-				output = output + "Step " + (i+1) + " " + instruction.getAttribute("html_instructions") + "end\n";
-			
-			}
-			
-			return output;
-		}	
-			catch (ParserConfigurationException e) 
-			{
-				e.printStackTrace();
-			}
-			catch (SAXException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				
-			}
-		return output;
+		String sumStart = "<summary>";
+		String sumEnd = "</summary>";
+		int Test = xmlIn.length();
+		int loopStart = 0;
+		
+		int indSumStart = xmlIn.indexOf(sumStart);
+		int indSumEnd = xmlIn.indexOf(sumEnd);
+		
+		output += xmlIn.substring((indSumStart+9), indSumEnd) + "\n";
+		
 
-	
+			String htmlStart = "<html_instructions>";
+			String htmlEnd = "</html_instructions>";
+			int indHtmlStart = xmlIn.indexOf(htmlStart);
+			int indHtmlEnd = xmlIn.indexOf(htmlEnd);
+			String untrimmed= xmlIn.substring((indHtmlStart+19), indHtmlEnd);
+			untrimmed = untrimmed.replaceAll("&lt;b&gt;", "");
+			untrimmed = untrimmed.replaceAll("&lt;/b&gt;", "");
+			untrimmed = untrimmed.replaceAll("/&lt;wbr/&gt;", "\n");
+			untrimmed = untrimmed.replaceAll("&lt;div style=&quot;font-size:0.9em&quot;&gt;", "\n");
+			untrimmed = untrimmed.replaceAll("&lt;/div&gt;", "");
+			output += untrimmed;
+			
+			
+		
+		return output;
 	}
-}
+	
+	public static String recursiveStringParser(String xmlIn)
+	{
+		
+		String outString = "";
+		String htmlStart = "<html_instructions>";
+		String htmlEnd = "</html_instructions>";
+		
+		
+		int indHtmlStart = xmlIn.indexOf(htmlStart);
+		int indHtmlEnd = xmlIn.indexOf(htmlEnd);
+		String untrimmed= xmlIn.substring((indHtmlStart+19), indHtmlEnd);
+		
+		
+		//System.out.println(xmlIn.substring(indHtmlEnd+20));
+		//clean the string
+		untrimmed = untrimmed.replaceAll("&lt;b&gt;", "");
+		untrimmed = untrimmed.replaceAll("&lt;/b&gt;", "");
+		untrimmed = untrimmed.replaceAll("/&lt;wbr/&gt;", "");
+		untrimmed = untrimmed.replaceAll("&lt;div style=&quot;font-size:0.9em&quot;&gt;", "");
+		untrimmed = untrimmed.replaceAll("&lt;/div&gt;", "");
+		outString += untrimmed;
+		
+		
+		//String subXmlIn = xmlIn.substring(indHtmlEnd)
+		//Recursive Function Call he said laughing maniacally
+		if(xmlIn.substring(indHtmlEnd+20).contains(htmlStart))
+		{
+			outString += recursiveStringParser(xmlIn.substring(indHtmlEnd+20));
+		}
+		
+		
+		
+		return outString;
+	}
+}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

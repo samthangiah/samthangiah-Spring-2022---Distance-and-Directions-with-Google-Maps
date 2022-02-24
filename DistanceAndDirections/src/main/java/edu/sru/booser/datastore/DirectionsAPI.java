@@ -89,10 +89,12 @@ public class DirectionsAPI {
 				}
 		}
 		
+		//Output works butis typically more than 255 characters, so when returned to Webpage an error breaks the site. Need to change to array, 
+		// or make in vector than transfer to array, then return array values to site.  -Greg
 		//return Output;
 		
 		//Temporary Output to test HTML. Will remove once Output parses correctly
-		return Output;
+		return "Cannot return, String too long";
 	}
 	
 	public static String parseString(String xmlIn) {

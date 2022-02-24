@@ -1,0 +1,3 @@
+2022-02-24 14:49:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SEARCH" not found; SQL statement:
+select search0_.id as id1_0_, search0_.city1 as city2_0_, search0_.city2 as city3_0_, search0_.country1 as country4_0_, search0_.country2 as country5_0_, search0_.destination as destinat6_0_, search0_.directions as directio7_0_, search0_.distance as distance8_0_, search0_.origin as origin9_0_, search0_.state1 as state10_0_, search0_.state2 as state11_0_, search0_.street1 as street12_0_, search0_.street2 as street13_0_, search0_.zip1 as zip14_0_, search0_.zip2 as zip15_0_ from search search0_ [42102-200]

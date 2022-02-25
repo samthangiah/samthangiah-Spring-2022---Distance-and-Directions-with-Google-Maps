@@ -11,9 +11,11 @@ public class Application {
 	//TEMP array to make adding test locations easier
 	String locationPairs[][] = 
 	{
-		{"Pittsburgh_PA", "Butler_PA"},
+		//{"Pittsburgh_PA", "Butler_PA"},
+		{"806 Graywyck Drive Seven Fields PA 16046 US", "401 Suncrest Drive Cranberry Township PA 16066 US"},
 		{"SlipperyRock_PA", "GroveCity_PA"},
-		{"Emlenton_PA", "Clarion_PA"}
+		{"Emlenton_PA", "Clarion_PA"},
+		{"SlipperyRock_PA", "GroveCity_PA"}
 	};
 	
 
@@ -46,6 +48,10 @@ public class Application {
 			distanceTable.addToTable(locationKey, DistanceMatrixAPI.getDistance(startLocation, endLocation));
 			
 			System.out.println("Created new table entry " + locationKey + " from API call");
+		}
+		else if(distanceTable.containsKey(locationKey)) {
+			
+			System.out.println("Found. Entry for " + locationKey + " is: " + distanceTable.getFromTable(locationKey));
 		}
 		
 		return distanceTable.getFromTable(locationKey);

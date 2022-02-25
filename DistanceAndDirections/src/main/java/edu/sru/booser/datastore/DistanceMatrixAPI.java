@@ -83,6 +83,9 @@ public class DistanceMatrixAPI {
 	 */
 	public static float getDistance(String orig, String dest) throws IOException
 	{
+		orig = orig.replaceAll(" ", "%20");
+		dest = dest.replaceAll(" ", "%20");
+		
 		ReadableByteChannel inChannel = null;
 		float distance=0;
 		try

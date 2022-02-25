@@ -41,6 +41,7 @@ public class DirectionsAPI {
 	
 	
 	public static String getDirections(String newOrigin, String newDestination) throws IOException {
+		
 		ReadableByteChannel inChannel = null;
 		String Output = "";
 		

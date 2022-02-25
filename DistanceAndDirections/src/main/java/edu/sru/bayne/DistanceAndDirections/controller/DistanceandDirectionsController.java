@@ -77,9 +77,6 @@ public class DistanceandDirectionsController{
             return "new-distance-query";
         }
 		
-		//Query will need address elements delimited by %20 (check out 
-		// https://maps.googleapis.com/maps/api/distancematrix/xml?origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA&mode=driving&units=imperial&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
-		
 		search.setOrigin();
 		search.setDestination();
 		System.out.println("Address 1: " + search.getOrigin());
@@ -87,14 +84,9 @@ public class DistanceandDirectionsController{
 	    
 	    //hash table should be compared here before calling API
 	    
-	    /* Call to DistanceMatrixAPI and DirectionsAPI to find and set distance + directions
-	     * Query will need address elements delimited by %20 (check out 'queryOrigAddress()', 'queryDestAddress()' in Search.java )
-	     * 		Example:
-	     * 		origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA
-	     * 		&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA
-	    */ 
+	
 		if(search.getqDistance()==null) {
-			search.setqDistance(DistanceMatrixAPI.getDistance(search.queryOrigAddress(), search.queryDestAddress()));
+			search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
 			System.out.println("Distance set to: " + search.getqDistance());
 		}
 	    System.out.println("Distance = " + search.getqDistance());
@@ -102,9 +94,6 @@ public class DistanceandDirectionsController{
 	    //search.setqDirections(DirectionsAPI.getDirections(search.queryOrigAddress(), search.queryDestAddress()));
 	    searchRepo.save(search);
 	    
-	   
-	    
-	
 	    
 	    return "redirect:/distance-matrix";
 	}
@@ -126,7 +115,7 @@ public class DistanceandDirectionsController{
         
      // Call DistanceMatrixAPI to find and set distance
 	    try {
-			search.setqDirections(DirectionsAPI.getDirections(search.queryOrigAddress(), search.queryDestAddress()));
+			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -190,28 +190,5 @@ public class Search {
 		this.country2 = country2;
 	}
 	
-	//Query will need address elements delimited by %20
-	// https://maps.googleapis.com/maps/api/distancematrix/xml?origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA&mode=driving&units=imperial&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
 	
-	public String queryOrigAddress() {
-		
-		String magic = "";
-		magic += this.getStreet1() + this.getCity1() + this.getState1() + this.getZip1() + this.getCountry1();
-		magic = magic.replaceAll(" ", "%20");
-	
-		return magic;
-	}
-	
-	public String queryDestAddress() {
-		
-		String magic = "";
-		magic += this.getStreet2() + this.getCity2() + this.getState2() + this.getZip2() + this.getCountry2();
-		magic = magic.replaceAll(",", " ");
-		magic = magic.replaceAll(" ", "%20");
-	
-		return magic;
-	}
-
-
-    // standard constructors / setters / getters / toString
 }

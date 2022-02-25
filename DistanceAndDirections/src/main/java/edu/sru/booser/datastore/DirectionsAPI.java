@@ -41,6 +41,10 @@ public class DirectionsAPI {
 	
 	
 	public static String getDirections(String newOrigin, String newDestination) throws IOException {
+		
+		newOrigin = newOrigin.replaceAll(" ", "%20");
+		newDestination = newDestination.replaceAll(" ", "%20");
+		
 		ReadableByteChannel inChannel = null;
 		String Output = "";
 		

@@ -7,6 +7,7 @@
  	<script>
 <!-- concatAdd(): concatenates address into single, valid string to be sent to query. this ensures proper address format  -->
 <!-- won't work without full address input. Formatting has been moved to controller-->
+<!-- **NOT CURRENTLY IN USE**-->
 function concatAdd(){
 	
 	let x = document.getElementById("sa1").value + ", " + document.getElementById("ci1").value +
@@ -36,19 +37,10 @@ function concatAdd(){
 		</form>
 		
 </div>
+
 <form id="AddressForm" action="#" th:action="@{/add-query}" th:object="${search}" method="post">
-   <!--  Old way of adding addresses (Use until distance + directions APIs work with full address)
-    <label for="origin">Origin</label><br>
-  	<input type="text" th:field="*{origin}" id="origin" placeholder="Origin Address" 
-  		   required pattern="[A-Za-z]+_[A-Za-z]{2}"><br><br>
-    <span th:if="${#fields.hasErrors('origin')}" th:errors="*{origin}"></span>
-    <label for="destination">Destination</label><br>
-    <input type="text" th:field="*{destination}" id="destination" placeholder="Destination Address" 
-    	   required pattern="[A-Za-z]+_[A-Za-z]{2}">
-    <span th:if="${#fields.hasErrors('destination')}" th:errors="*{destination}"></span> -->
- 				
- 					<!-- Testing for final form view -->  
- 					<!-- https://www.w3schools.com/html/html_forms_attributes.asp --> 
+  
+  	<!-- Form for starting address -->
  	<h3>Address 1</h3>				 
     <label for="sa1">Street</label><br>
   	<input id="sa1" th:field="*{street1}" type="text" size="50" placeholder="Street" name="address1"><br>
@@ -61,6 +53,7 @@ function concatAdd(){
   	<label for="col1">Country </label><br>
   	<input id="co1" th:field="*{country1}" type="text" size="20" placeholder="Country" name="address1"><br>
     
+    <!-- Form for ending address -->
     <h3>Address 2</h3>				
     <label for="sa2">Street </label><br>
   	<input id="sa2" th:field="*{street2}" type="text" size="50" placeholder="Street" name="address2"><br>

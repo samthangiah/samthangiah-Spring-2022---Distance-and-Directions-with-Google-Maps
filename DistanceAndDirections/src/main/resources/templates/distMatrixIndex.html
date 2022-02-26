@@ -17,6 +17,7 @@
 		<h2>Queries</h2>
             <table border=".5" bordercolor="#A9A9A9">
                 <thead>
+                	<!-- Headings for query table -->
                     <tr>
                         <th>Origin       </th>
                         <th>Destination  </th>
@@ -26,6 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                <!-- Shows data for each entity found in database -->
                 <tr th:each="search : ${dist}">
                     <td th:text="${search.getOrigin()}"></td>
                     <td th:text="${search.getDestination()}"></td>

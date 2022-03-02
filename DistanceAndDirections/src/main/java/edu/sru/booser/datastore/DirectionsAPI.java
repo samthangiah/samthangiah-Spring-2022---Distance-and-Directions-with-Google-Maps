@@ -40,7 +40,64 @@ public class DirectionsAPI {
 	private static HttpURLConnection _httpConnection = null;
 	
 	
-	public static String getDirections(String newOrigin, String newDestination) throws IOException {
+	public static DirectionsHolder getXMLDirections(String newOrigin, String newDestination) throws IOException {
+		ReadableByteChannel inChannel = null;
+		DirectionsHolder Output;
+		
+		try {
+			URL directionsCallAPI = new URL(
+					CoreAPI +
+					(Origin + newOrigin) +
+					(Destination + newDestination) +
+					Mode +
+					Measurement +
+					apiKey
+					);
+			_httpConnection = 
+					(HttpURLConnection) directionsCallAPI.openConnection();
+			InputStream stream = _httpConnection.getInputStream();
+			BufferedReader bufReader = new BufferedReader(
+					new InputStreamReader(stream));
+			/*
+			 * Makes recDataSB to read the xml file
+			 * from the bufReader 
+			 */
+			StringBuilder recDataSB = new StringBuilder();
+			String recData;
+			while ((recData = bufReader.readLine()) != null)
+			{
+				recDataSB.append(recData);
+				//System.out.println(recDataSB.toString());
+			}
+			System.out.println(recDataSB.toString());
+			System.out.println(recDataSB);
+			//Output = parseString(recDataSB.toString());
+			Output = SAXy_Parser.parseDirections(recDataSB.toString());
+		}
+		catch (IOException e)
+		{
+			throw e; // Propagate the exception
+		}
+		finally
+		{
+			if (inChannel != null)
+				try {
+					inChannel.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+		//return Output;
+		
+		//Temporary Output to test HTML. Will remove once Output parses correctly
+		return Output;
+	}
+	
+	
+	
+	public static String getStringDirections(String newOrigin, String newDestination) throws IOException {
 		ReadableByteChannel inChannel = null;
 		String Output = "";
 		
@@ -93,36 +150,6 @@ public class DirectionsAPI {
 		
 		//Temporary Output to test HTML. Will remove once Output parses correctly
 		return Output;
-	}
-	
-	public static String parseString(String xmlIn) {
-		String output = "";
-		String sumStart = "<summary>";
-		String sumEnd = "</summary>";
-		int Test = xmlIn.length();
-		int loopStart = 0;
-		
-		int indSumStart = xmlIn.indexOf(sumStart);
-		int indSumEnd = xmlIn.indexOf(sumEnd);
-		
-		output += xmlIn.substring((indSumStart+9), indSumEnd) + "\n";
-		
-
-			String htmlStart = "<html_instructions>";
-			String htmlEnd = "</html_instructions>";
-			int indHtmlStart = xmlIn.indexOf(htmlStart);
-			int indHtmlEnd = xmlIn.indexOf(htmlEnd);
-			String untrimmed= xmlIn.substring((indHtmlStart+19), indHtmlEnd);
-			untrimmed = untrimmed.replaceAll("&lt;b&gt;", "");
-			untrimmed = untrimmed.replaceAll("&lt;/b&gt;", "");
-			untrimmed = untrimmed.replaceAll("/&lt;wbr/&gt;", "\n");
-			untrimmed = untrimmed.replaceAll("&lt;div style=&quot;font-size:0.9em&quot;&gt;", "\n");
-			untrimmed = untrimmed.replaceAll("&lt;/div&gt;", "");
-			output += untrimmed;
-			
-			
-		
-		return output;
 	}
 	
 	public static String recursiveStringParser(String xmlIn)

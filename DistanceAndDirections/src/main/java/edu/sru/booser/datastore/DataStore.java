@@ -1,5 +1,6 @@
 package edu.sru.booser.datastore;
 import java.io.IOException;
+import java.util.Vector;
 /*
  * requestDistanceMatrix
  * Stores the starting and ending locations
@@ -75,7 +76,8 @@ public class DataStore {
 			this.Directions = newDirections;
 		}
 		
-	
+	private DirectionsHolder Holder;
+
 	/*
 	 * Constructors
 	 * For Simple and Complex Entries
@@ -91,6 +93,12 @@ public class DataStore {
 		this.setInputStart(lS);
 		this.setInputEnd(lE);
 		this.setDistMiles(this.calcDistance());
+		try {
+			Holder = DirectionsAPI.getXMLDirections(lS, lE);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/*
@@ -157,10 +165,10 @@ public class DataStore {
 		System.out.println(this.getDirections());
 	}
 	
-	public String calcDirections() {
+	public String calcStringDirections() {
 		String directions = "Failed"; 
 		try {
-			directions = DirectionsAPI.getDirections(this.getInputStart(), this.getInputEnd());
+			directions = DirectionsAPI.getStringDirections(this.getInputStart(), this.getInputEnd());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

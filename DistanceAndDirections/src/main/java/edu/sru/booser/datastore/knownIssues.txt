@@ -1,3 +1,9 @@
 File:		DirectionsAPI
 Method:		parseDirections(String xmlIn)
 Issue:		Fails to create meaningful output.
+
+File:		DirectionsAPI
+Method:		parseDirections(String xmlIN)
+Issue:		returns filler line
+
+Head <b>north</b> on <b>PA-8 N</b>/<wbr/><b>N Main St</b> toward <b>E New Castle St</b><div style="font-size:0.9em">Continue to follow PA-8 N</div><div style="font-size:0.9em">Pass by Dollar General (on the right)</div>

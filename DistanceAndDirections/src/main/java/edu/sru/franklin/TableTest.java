@@ -1,7 +1,8 @@
+package edu.sru.franklin;
 public class TableTest {
 	
 	public static void main(String args[]) {
-		FranklinTest instance = new FranklinTest();
+		TableTest instance = new TableTest();
 		instance.start();	
 	}
 	

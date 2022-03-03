@@ -90,8 +90,6 @@ public class DistanceandDirectionsController{
 			System.out.println("Distance set to: " + search.getqDistance());
 		}
 	    System.out.println("Distance = " + search.getqDistance());
-	    // Call DistanceMatrixAPI to find and set distance
-	    //search.setqDirections(DirectionsAPI.getDirections(search.queryOrigAddress(), search.queryDestAddress()));
 	    searchRepo.save(search);
 	    
 	    
@@ -112,10 +110,11 @@ public class DistanceandDirectionsController{
         Search search = searchRepo.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid query:" + id));
         model.addAttribute("query", search);
+       DirectionsHolder Holder = new DirectionsHolder();
         
      // Call DistanceMatrixAPI to find and set distance
 	    try {
-			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination()));
+			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination(), Holder));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

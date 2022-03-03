@@ -1,18 +1,18 @@
 package edu.sru.bayne.DistanceAndDirections.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import org.springframework.lang.NonNull;
+import edu.sru.booser.datastore.DirectionsHolder;
 
 /**
  * Class depicting object model for query data stored in the H2 database. Holds start and 
  * end addresses, and other correlated data. 
  * @author Gregory Bayne
- * 
- */
+
 @Entity
 public class Search {
     
@@ -40,6 +40,8 @@ public class Search {
 	private String zip2;
 	private String country2;
 	
+	//public DirectionsHolder Holder;
+	
     
 	
 	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
@@ -49,6 +51,7 @@ public class Search {
     
     //stores directions
     @NonNull
+    @Column(name="directions",columnDefinition="LONGTEXT")
     private String directions;
     
     public String getOrigin() {

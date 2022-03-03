@@ -35,6 +35,14 @@ public class DirectionsAPI {
 	private static HttpURLConnection _httpConnection = null;
 	
 	
+	/**
+	 * It contacts the google APi and attempts to get directions from the past origin to the directions.
+	 * It currently outputs test data.
+	 * @param newOrigin New starting location
+	 * @param newDestination
+	 * @return "Temp from directions api" 
+	 * @throws IOException throws if API call is bad
+	 */
 	public static String getDirections(String newOrigin, String newDestination) throws IOException {
 		ReadableByteChannel inChannel = null;
 		String Output = "";
@@ -88,7 +96,11 @@ public class DirectionsAPI {
 		//Temporary Output to test HTML. Will remove once Output parses correctly
 		return "Temp from Directions API";
 	}
-	
+	/**
+	 * It takes in the xml data from the google api and parses it into a usable form. 
+	 * @param xmlIn the xml data from google api
+	 * @return the formatted xml data
+	 */
 	public static String parseDirections(String xmlIn) {
 		String output = "";
 		try

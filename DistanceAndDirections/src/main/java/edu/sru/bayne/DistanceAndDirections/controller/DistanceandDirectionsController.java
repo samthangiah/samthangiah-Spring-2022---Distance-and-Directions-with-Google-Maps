@@ -27,12 +27,21 @@ public class DistanceandDirectionsController{
 	}
 	
 	// Mapping for the home index displaying current queries
+	/**
+	 * gets index of distance matrix from model
+	 * @param model the model
+	 * @return the index of the distance matrix
+	 */
 	@RequestMapping({"", "/distance-matrix"})
 	public String showQueries(Model model) {
 		model.addAttribute("dist", searchRepo.findAll());
 		return "distMatrixIndex";
 	}
-	
+	/**
+	 * gets distance query
+	 * @param search  the search
+	 * @return new distance query
+	 */
 	// Mapping to search fields
 	@RequestMapping({"/newsearch"})
 	public String addAddressesForm(Search search) {
@@ -41,6 +50,14 @@ public class DistanceandDirectionsController{
 	
 	// Mapping for adding query. Uses DistanceMatrixAPI.java to return distance values. 
 	//
+	/**
+	 * get new distance query
+	 * @param search the search
+	 * @param result the result
+	 * @param model the model
+	 * @return new distance query
+	 * @throws IOException
+	 */
 	@RequestMapping({"/add-query"})
 	public String addQuery(@Validated Search search, BindingResult result, Model model) throws IOException {
 		if (result.hasErrors()) {
@@ -77,7 +94,12 @@ public class DistanceandDirectionsController{
 	    return "redirect:/distance-matrix";
 	}
 	
-	
+	/**
+	 * deletes user 
+	 * @param id the id
+	 * @param model the model
+	 * @return redirects distance matrix
+	 */
 	@GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {
         Search search = searchRepo.findById(id)

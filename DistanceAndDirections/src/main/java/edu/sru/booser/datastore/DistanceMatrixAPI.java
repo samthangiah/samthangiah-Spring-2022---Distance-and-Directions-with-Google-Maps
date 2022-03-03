@@ -62,6 +62,9 @@ public class DistanceMatrixAPI {
 	 */
 	public static float getDistance(String orig, String dest) throws IOException
 	{
+		orig = orig.replaceAll(" ", "%20");
+		dest = dest.replaceAll(" ", "%20");
+		
 		ReadableByteChannel inChannel = null;
 		float distance=0;
 		try
@@ -131,13 +134,7 @@ public class DistanceMatrixAPI {
 		}
 		catch (Exception e)
 		{
-			System.out.println("Occurred at 2");
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 		}
 
 		return distance;

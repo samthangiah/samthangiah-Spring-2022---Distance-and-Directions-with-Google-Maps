@@ -66,7 +66,10 @@ public class DirectionsAPI {
 	public static String getDirections(String newOrigin, String newDestination, DirectionsHolder Holder) throws IOException {
 	ReadableByteChannel inChannel = null;
 	
-	
+
+	newOrigin = newOrigin.replaceAll(" ", "%20");
+	newDestination = newDestination.replaceAll(" ", "%20");
+		
 	try {
 		URL directionsCallAPI = new URL(
 				CoreAPI +
@@ -84,11 +87,14 @@ public class DirectionsAPI {
 		StringBuilder recDataSB = new StringBuilder();
 		String recData;
 		while ((recData = bufReader.readLine()) != null)
+
 		{
 			recDataSB.append(recData);
 		}
+
 		parseINSTRUCTIONS(recDataSB.toString(), Holder);
 		parseSUMMARY(recDataSB.toString(), Holder);
+
 	}
 	catch (IOException e)
 	{

@@ -5,24 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import org.springframework.lang.NonNull;
-
 import edu.sru.booser.datastore.DirectionsHolder;
 
-/*
- * Structure for the database to hold the information on the user
- * 
- * @Entity, @Id and @Generated value should be from the javax.persistence library
- * @NonNull is from the org.springwork library 
- * 
- * As the User class is designated as a @Entity, the JPA (Java Persistence API), which is Hibernate, will be able to perform CRUD 
- * (Create, Read, Update, Delete) operations on the domain entities.
- * 
- * The name and e-mail have been constrained to @NoNull values and allows the Hibernate Validator for validating the constrained
- * fields before persisting or updating an entity to the database.
- */
-
+/**
+ * Class depicting object model for query data stored in the H2 database. Holds start and 
+ * end addresses, and other correlated data. 
+ * @author Gregory Bayne
 
 @Entity
 public class Search {
@@ -196,28 +185,5 @@ public class Search {
 		this.country2 = country2;
 	}
 	
-	//Query will need address elements delimited by %20
-	// https://maps.googleapis.com/maps/api/distancematrix/xml?origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA&mode=driving&units=imperial&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
 	
-	public String queryOrigAddress() {
-		
-		String magic = "";
-		magic += this.getStreet1() + this.getCity1() + this.getState1() + this.getZip1() + this.getCountry1();
-		magic = magic.replaceAll(" ", "%20");
-	
-		return magic;
-	}
-	
-	public String queryDestAddress() {
-		
-		String magic = "";
-		magic += this.getStreet2() + this.getCity2() + this.getState2() + this.getZip2() + this.getCountry2();
-		magic = magic.replaceAll(",", " ");
-		magic = magic.replaceAll(" ", "%20");
-	
-		return magic;
-	}
-
-
-    // standard constructors / setters / getters / toString
 }

@@ -2,7 +2,11 @@ package edu.sru.bayne.DistanceAndDirections;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+/**
+ * Application class to launch website on localhost:8080
+ * @author Gregory Bayne
+ *
+ */
 @SpringBootApplication
 public class DistanceAndDirectionsApplication {
 

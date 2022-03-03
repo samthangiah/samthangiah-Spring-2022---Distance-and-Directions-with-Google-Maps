@@ -1,28 +1,3 @@
- /* CODE SOURCED FROM
- * DR. THANGIAH
- * 
- * 
- * -CHANGE_LOG-
- * 
- * -CHANGE
- * 		LINE 37 :: _gapiUrlPart
- * 		'http://..' to 'https://..'
- * 		CHANGE AVOIDS ERROR=
- * 		Requests to this API must be over SSL. Load the API with &quot;https://&quot; instead of &quot;http://&quot;.</error_message
- * 
- * -ADDED
- * 		LINE 83 :: getDistance(string, string);
- * 		+ "&key=AIzaSyBVQLXpEAFeBH8tXxwsT8Uyh5rRcuV11Ak"
- * 		ADDS PERSONAL DISTANCE MATRIX API KEY
- * 
- * -CHANGE
- * 		LINE 98 & 145
- * 		Commented out output line
- * 
- * -ADDED 
- * 		Line 54
- * 		Constanct for storing the Distance Matrix API Key
- */
 
 package edu.sru.booser.datastore;
 import java.io.BufferedReader;
@@ -44,7 +19,13 @@ import java.io.*;
 
 
 /* Used for obtaining distance using Google Maps API*/
-
+/**
+ * Code from Dr.Thangiah for sending request to Google's Distance Matrix @API,
+ * and parsing the XML response into miles.
+ * 
+ * @author Dr. Thangiah
+ *
+ */
 public class DistanceMatrixAPI {
 	
 	/**
@@ -67,13 +48,11 @@ public class DistanceMatrixAPI {
 	/**
 	 * Destination address.
 	 */
-	//private String _toAddress = "&destinations=Pittsburgh+PA";
 	private static String _toAddress = "&destinations=16057";
 
 	/**
 	 * Origin address.
 	 */
-	//private String _fromAddress = "origins=Slippery+Rock+PA";
 	private static String _fromAddress = "origins=16058";
 
 	/**
@@ -130,13 +109,7 @@ public class DistanceMatrixAPI {
 	{
 		float distance=0;
 		String strMileage;
-		//String message;
-		/*String xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><DistanceMatrixResponse> "
-				+ "<status>OK</status> <origin_address>Turkey City, PA 16058, USA</origin_address> "
-				+ "<destination_address>Slippery Rock, PA 16057, USA</destination_address> "
-				+ "<row>  <element>   <status>OK</status>   <duration>    <value>2986</value>    <text>50 mins</text>   </duration>  "
-				+ " <distance>    <value>62315</value>    <text>38.7 mi</text>   </distance>  </element> </row></DistanceMatrixResponse>";
-		*/
+		
 		try {
 		DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
 		DocumentBuilder b = f.newDocumentBuilder();
@@ -166,27 +139,7 @@ public class DistanceMatrixAPI {
 				e1.printStackTrace();
 			}
 		}
-		
-		/*String xml = "<message>HELLO!</message>";
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
-		try {
-		    db = dbf.newDocumentBuilder();
-		    InputSource is = new InputSource();
-		    is.setCharacterStream(new StringReader(xmlRecords));
-		    try {
-		        Document doc = db.parse(is);
-		         message = doc.getDocumentElement().getTextContent();
-		         message = doc.getDocumentElement().g   getAttribute("distance");
-		        System.out.println(message);
-		    } catch (SAXException e) {
-		        // handle SAXException
-		    } catch (IOException e) {
-		        // handle IOException
-		    }
-		} catch (ParserConfigurationException e1) {
-		    // handle ParserConfigurationException
-		} */
+
 		return distance;
 
 	}

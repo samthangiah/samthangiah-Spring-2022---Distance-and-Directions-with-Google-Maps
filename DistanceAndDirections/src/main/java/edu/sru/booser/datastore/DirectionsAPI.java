@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 //import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,8 +28,20 @@ import org.xml.sax.helpers.*;
 
 
 
+/**
+ * Generates a request for the Google Directions @API and parses the response.
+ * Based heavily on code provided by Dr. Thangiah for sending Google Distance Matrix request,
+ * and parsing information from the XML response.
+ * 
+ * @author Michael Booser
+ * @author Dr. Thangiah
+ *
+ */
 public class DirectionsAPI {
-
+	
+	/**
+	 * The key used to access the Directions @api
+	 */
 	final static String apiKey = "&key=AIzaSyAStw6XHaUsvg_-LMDrOPGRl0ubLZi9aZ4";
 	
 	static final String CoreAPI = "https://maps.googleapis.com/maps/api/directions/xml?";
@@ -39,157 +52,147 @@ public class DirectionsAPI {
 	
 	private static HttpURLConnection _httpConnection = null;
 	
+	/**
+	 * Returns a parsed XML reply from google's directions API.
+	 * newOrigin and newDestination are the starting and ending points of the route.
+	 * Holder is an object that can parse the xml response from Google.
+	 * 
+	 * @param newOrigin is the starting location requested by the user.
+	 * @param newDestination is the end location requested by the user.
+	 * @param Holder is an instance of a DirectionsHolder object used to store the parsed xml code
+	 * @return returns the parsed xml file reply from Google's Directions API as a String
+	 * @throws IOException
+	 */
+	public static String getDirections(String newOrigin, String newDestination, DirectionsHolder Holder) throws IOException {
+	ReadableByteChannel inChannel = null;
 	
-	public static DirectionsHolder getXMLDirections(String newOrigin, String newDestination) throws IOException {
-		ReadableByteChannel inChannel = null;
-		DirectionsHolder Output;
-		
-		try {
-			URL directionsCallAPI = new URL(
-					CoreAPI +
-					(Origin + newOrigin) +
-					(Destination + newDestination) +
-					Mode +
-					Measurement +
-					apiKey
-					);
-			_httpConnection = 
-					(HttpURLConnection) directionsCallAPI.openConnection();
-			InputStream stream = _httpConnection.getInputStream();
-			BufferedReader bufReader = new BufferedReader(
-					new InputStreamReader(stream));
-			/*
-			 * Makes recDataSB to read the xml file
-			 * from the bufReader 
-			 */
-			StringBuilder recDataSB = new StringBuilder();
-			String recData;
-			while ((recData = bufReader.readLine()) != null)
-			{
-				recDataSB.append(recData);
-				//System.out.println(recDataSB.toString());
-			}
-			System.out.println(recDataSB.toString());
-			System.out.println(recDataSB);
-			//Output = parseString(recDataSB.toString());
-			Output = SAXy_Parser.parseDirections(recDataSB.toString());
-		}
-		catch (IOException e)
+	
+	try {
+		URL directionsCallAPI = new URL(
+				CoreAPI +
+				(Origin + newOrigin) +
+				(Destination + newDestination) +
+				Mode +
+				Measurement +
+				apiKey
+				);
+		_httpConnection = 
+				(HttpURLConnection) directionsCallAPI.openConnection();
+		InputStream stream = _httpConnection.getInputStream();
+		BufferedReader bufReader = new BufferedReader(
+				new InputStreamReader(stream));
+		StringBuilder recDataSB = new StringBuilder();
+		String recData;
+		while ((recData = bufReader.readLine()) != null)
 		{
-			throw e; // Propagate the exception
+			recDataSB.append(recData);
 		}
-		finally
-		{
-			if (inChannel != null)
-				try {
-					inChannel.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-		
-		//return Output;
-		
-		//Temporary Output to test HTML. Will remove once Output parses correctly
-		return Output;
+		parseINSTRUCTIONS(recDataSB.toString(), Holder);
+		parseSUMMARY(recDataSB.toString(), Holder);
 	}
-	
-	
-	
-	public static String getStringDirections(String newOrigin, String newDestination) throws IOException {
-		ReadableByteChannel inChannel = null;
-		String Output = "";
-		
-		try {
-			URL directionsCallAPI = new URL(
-					CoreAPI +
-					(Origin + newOrigin) +
-					(Destination + newDestination) +
-					Mode +
-					Measurement +
-					apiKey
-					);
-			_httpConnection = 
-					(HttpURLConnection) directionsCallAPI.openConnection();
-			InputStream stream = _httpConnection.getInputStream();
-			BufferedReader bufReader = new BufferedReader(
-					new InputStreamReader(stream));
-			/*
-			 * Makes recDataSB to read the xml file
-			 * from the bufReader 
-			 */
-			StringBuilder recDataSB = new StringBuilder();
-			String recData;
-			while ((recData = bufReader.readLine()) != null)
-			{
-				recDataSB.append(recData);
-				//System.out.println(recDataSB.toString());
-			}
-			System.out.println(recDataSB.toString());
-			System.out.println(recDataSB);
-			//Output = parseString(recDataSB.toString());
-			Output = recursiveStringParser(recDataSB.toString());
-		}
-		catch (IOException e)
-		{
-			throw e; // Propagate the exception
-		}
-		finally
-		{
-			if (inChannel != null)
-				try {
-					inChannel.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-		
-		//return Output;
-		
-		//Temporary Output to test HTML. Will remove once Output parses correctly
-		return Output;
-	}
-	
-	public static String recursiveStringParser(String xmlIn)
+	catch (IOException e)
 	{
-		
-		String outString = "";
-		String htmlStart = "<html_instructions>";
-		String htmlEnd = "</html_instructions>";
-		
-		
-		int indHtmlStart = xmlIn.indexOf(htmlStart);
-		int indHtmlEnd = xmlIn.indexOf(htmlEnd);
-		String untrimmed= xmlIn.substring((indHtmlStart+19), indHtmlEnd);
-		
-		
-		//System.out.println(xmlIn.substring(indHtmlEnd+20));
-		//clean the string
-		untrimmed = untrimmed.replaceAll("&lt;b&gt;", "");
-		untrimmed = untrimmed.replaceAll("&lt;/b&gt;", "");
-		untrimmed = untrimmed.replaceAll("/&lt;wbr/&gt;", "");
-		untrimmed = untrimmed.replaceAll("&lt;div style=&quot;font-size:0.9em&quot;&gt;", "");
-		untrimmed = untrimmed.replaceAll("&lt;/div&gt;", "");
-		outString += untrimmed;
-		
-		
-		//String subXmlIn = xmlIn.substring(indHtmlEnd)
-		//Recursive Function Call he said laughing maniacally
-		if(xmlIn.substring(indHtmlEnd+20).contains(htmlStart))
+		throw e; // Propagate the exception
+	}
+	finally
+	{
+		if (inChannel != null)
+			try {
+				inChannel.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	return Holder.toString();
+	
+}
+	
+	/**
+	 * Parses the route summary from xmlIn into the DirectionsHolder.
+	 * 
+	 * @param xmlIn an XML response from the Google Distance API
+	 * @param holder the object that will store the directions summary
+	 */
+	public static void parseSUMMARY(String xmlIn, DirectionsHolder holder) {
+		try
 		{
-			outString += recursiveStringParser(xmlIn.substring(indHtmlEnd+20));
+			DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+			DocumentBuilder b = f.newDocumentBuilder();
+			Document doc = b.parse(new ByteArrayInputStream(xmlIn.getBytes("UTF-8")));
+			NodeList books = doc.getElementsByTagName("route");
+			for (int i = 0; i < books.getLength(); i++)
+			{
+				Element book = (Element) books.item(i);
+				Node title = book.getElementsByTagName("summary").item(0);
+				String strIntake = title.getTextContent();
+				holder.setSummary(strIntake);
+			}
+		
+		}
+		catch (Exception e)
+		{
+			System.out.println("Occurred at 2");
+			try 
+			{
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		
 		
-		return outString;
+	}
+	
+	/**
+	 * Parses the directions from xmlIn into the directions vector
+	 * of the holder object
+	 * 
+	 * @param xmlIn an XML response from the Google Distance API
+	 * @param holder the object that will store the directions in a vector
+	 */
+	public static void parseINSTRUCTIONS(String xmlIn, DirectionsHolder holder) {
+		try
+		{
+			DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+			DocumentBuilder b = f.newDocumentBuilder();
+			Document doc = b.parse(new ByteArrayInputStream(xmlIn.getBytes("UTF-8")));
+			NodeList books = doc.getElementsByTagName("step");
+			for (int i = 0; i < books.getLength(); i++)
+			{
+				Element book = (Element) books.item(i);
+				Node title = book.getElementsByTagName("html_instructions").item(0);
+				String strIntake = title.getTextContent();
+				strIntake = strIntake.replace("<b>", "");
+				strIntake = strIntake.replace("</b>", "");
+				strIntake = strIntake.replace("<div style=\"font-size:0.9em\">", " ");
+				strIntake = strIntake.replace("</div>", "");
+				strIntake = strIntake.replace("<wbr/>", "");
+				strIntake = strIntake.replace("&nbsp;", "");
+				holder.directions.add(strIntake);
+			}
+		
+		}
+		catch (Exception e)
+		{
+			System.out.println("Occurred at 2");
+			try 
+			{
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
 	}
 }	
-
-
-
+		
+	
 
 
 

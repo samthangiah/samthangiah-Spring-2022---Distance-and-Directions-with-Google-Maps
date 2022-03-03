@@ -12,7 +12,7 @@ import edu.sru.booser.datastore.DirectionsHolder;
  * Class depicting object model for query data stored in the H2 database. Holds start and 
  * end addresses, and other correlated data. 
  * @author Gregory Bayne
-
+*/
 @Entity
 public class Search {
     

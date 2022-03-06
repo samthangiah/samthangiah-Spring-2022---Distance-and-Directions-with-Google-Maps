@@ -16,46 +16,59 @@ import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
 import edu.sru.booser.datastore.*;
 
 
-//Controller for Distance Matrix HTML
+/**
+ * The controller class for handling interaction between the following:
+ * 1. The "SearchRepository" (CRUD Repository) and corresponding "search" entities.
+ * 2. The html webpages found in ./src/main/resources/templates
+ * 
+ * @author Gregory Bayne
+ *
+ */
 @Controller
 public class DistanceandDirectionsController{
 	
 	private SearchRepository searchRepo;
 	
+	
 	public DistanceandDirectionsController(SearchRepository searchRepo) {
 		this.searchRepo = searchRepo;
 	}
 	
-	// Mapping for the home index displaying current queries
 	/**
-	 * gets index of distance matrix from model
-	 * @param model the model
-	 * @return the index of the distance matrix
+	 * Mapping for the home index displaying Search entities (queries) currently stored 
+	 * in the database.
+	 * @param model is the 'Search' entity used by the repository
+	 * @return
 	 */
 	@RequestMapping({"", "/distance-matrix"})
 	public String showQueries(Model model) {
 		model.addAttribute("dist", searchRepo.findAll());
 		return "distMatrixIndex";
 	}
+	
 	/**
-	 * gets distance query
-	 * @param search  the search
-	 * @return new distance query
+	 * Mapping for a "New Query" button in the home webpage to send for a new webpage, 
+	 * one containing an address form to input new data in an instance of Search.
+	 * 
+	 * @param search is an instance of the Entity Search
+	 * @return path to address form webpage (new-distance-query.html)
 	 */
-	// Mapping to search fields
 	@RequestMapping({"/newsearch"})
 	public String addAddressesForm(Search search) {
         return "new-distance-query";
     }
-	
-	// Mapping for adding query. Uses DistanceMatrixAPI.java to return distance values. 
-	//
+	 
 	/**
-	 * get new distance query
-	 * @param search the search
-	 * @param result the result
-	 * @param model the model
-	 * @return new distance query
+	 * Mapping for adding query (new-distance-query.html). Data entered in address 
+	 * form from the webpage is saved to an instance in the database. Additionally, 
+	 * a hash table is checked to see if the distance has been calculated. If it is not,
+	 * the DistanceAPI.java calculates and saved the Distance associated with the query.
+	 * The "/add-query" page redirects to the "/newsearch" page.
+	 * 
+	 * @param search is an instance of the Entity Search
+	 * @param result 
+	 * @param model is the 'Search' entity used by the repository
+	 * @return path to home (disMatrixIndex.html)
 	 * @throws IOException
 	 */
 	@RequestMapping({"/add-query"})
@@ -64,9 +77,6 @@ public class DistanceandDirectionsController{
             return "new-distance-query";
         }
 		
-		//Query will need address elements delimited by %20 (check out 
-		// https://maps.googleapis.com/maps/api/distancematrix/xml?origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA&mode=driving&units=imperial&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
-		
 		search.setOrigin();
 		search.setDestination();
 		System.out.println("Address 1: " + search.getOrigin());
@@ -74,31 +84,55 @@ public class DistanceandDirectionsController{
 	    
 	    //hash table should be compared here before calling API
 	    
-	    /* Call to DistanceMatrixAPI and DirectionsAPI to find and set distance + directions
-	     * Query will need address elements delimited by %20 (check out 'queryOrigAddress()', 'queryDestAddress()' in Search.java )
-	     * 		Example:
-	     * 		origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA
-	     * 		&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA
-	    */ 
-		
-	    search.setqDistance(DistanceMatrixAPI.getDistance(search.queryOrigAddress(), search.queryDestAddress()));
+	
+		if(search.getqDistance()==null) {
+			search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
+			System.out.println("Distance set to: " + search.getqDistance());
+		}
 	    System.out.println("Distance = " + search.getqDistance());
-	    // Call DistanceMatrixAPI to find and set distance
-	    // search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination()));
 	    searchRepo.save(search);
 	    
-	   
-	    
-	
 	    
 	    return "redirect:/distance-matrix";
 	}
 	
 	/**
-	 * deletes user 
-	 * @param id the id
-	 * @param model the model
-	 * @return redirects distance matrix
+	 * Gets mapping for directions (directions.html)page. Mapping is dependent on 
+	 * id of the Search Instance. This entity is used to display directions of the 
+	 * instance with the same id.
+	 * 
+	 * @param id is the ID of the instance of the Search entity
+	 * @param model is the 'Search' entity used by the repository
+	 * @return path to Home
+	 */
+	@RequestMapping("/find-directions/{id}")
+    public String pullDirections(@PathVariable("id") long id, Model model) {
+        Search search = searchRepo.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid query:" + id));
+        model.addAttribute("query", search);
+       DirectionsHolder Holder = new DirectionsHolder();
+        
+     // Call DistanceMatrixAPI to find and set distance
+	    try {
+			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination(), Holder));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        System.out.println(search.getOrigin());
+        System.out.println(search.getDestination());
+        
+        return "/directions";
+    }
+	
+	/**
+	 * Mapping for a call in which a Search instance with a provided id is deleted.
+	 * The "/delete/{id}" page instantly redirects to the "/newsearch" page.
+	 * 
+	 * @param id is the ID of the instance of the Search entity
+	 * @param model is the 'Search' entity used by the repository
+	 * @return
 	 */
 	@GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id, Model model) {

@@ -1,15 +1,17 @@
 package edu.sru.booser.datastore;
 import java.io.IOException;
-/*
- * requestDistanceMatrix
+import java.util.Vector;
+
+/**
+ * Holds Data for Maps Queries
  * Stores the starting and ending locations
- * as well as the distance.
+ * as well as the distance and directionsHolder.
  * 
  */
 public class DataStore {
 
-	/*
-	 * Var Locations
+	/**
+	 * The start location in any format.
 	 */
 	/**
 	 * getter for location start state
@@ -66,6 +68,9 @@ public class DataStore {
 		/**
 		 * getter for input end
 		 */
+	/**
+	 * The end location in any format.
+	 */
 	private String inputEnd;
 		public String getInputEnd() {
 			return inputEnd;
@@ -77,6 +82,9 @@ public class DataStore {
 		/**
 		 * getter for distance miles
 		 */
+	/**
+	 * The distance in miles between inputStart and inputEnd.
+	 */
 	private float  distMiles;
 		public float getDistMiles() {
 			return distMiles;
@@ -84,29 +92,24 @@ public class DataStore {
 		public void setDistMiles(float distMiles) {
 			this.distMiles = distMiles;
 		}
-		
-		/**
-		 * getter for directions
-		 */
-	private String Directions;
-		public String getDirections() {
-			return Directions;
-		}
-		public void setDirections(String newDirections) {
-			this.Directions = newDirections;
-		}
-		
 	
-	/*
-	 * Constructors
-	 * For Simple and Complex Entries
-	 * with or without a distance already included.
-	 * 
+	/**
+	 * An object that holds trip information.
 	 */
-		
-	/*
-	 * Constructor for DataStore with Formated Locations
-	 * No Data
+	protected DirectionsHolder Holder = new DirectionsHolder();
+		public DirectionsHolder getHolder() {
+			return Holder;
+		}
+		public void setHolder(DirectionsHolder holder) {
+			Holder = holder;
+		}
+
+	/**
+	 * Primary constructor for the DataStore Object
+	 * Created with starting and ending location
+	 * 
+	 * @param lS route starting location
+	 * @param lE route ending location
 	 */
 		/**
 		 * Gets start and end and then calculates distance
@@ -117,11 +120,22 @@ public class DataStore {
 		this.setInputStart(lS);
 		this.setInputEnd(lE);
 		this.setDistMiles(this.calcDistance());
+		try {
+			DirectionsAPI.getDirections(lS, lE, this.Holder);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
-	/*
-	 * Constructor for DataStore with Formated Locations
-	 * With Distance Measured
+	/**
+	 * Alternative constructor for the DataStore Object
+	 * Allows for a known distance to be given when the object is instantiated
+	 * 
+	 * @param lS route starting location
+	 * @param lE route ending locaction 
+	 * @param dM known distance in miles
 	 */
 	/**
 	 * Sets starting and end values and then finds distance
@@ -193,6 +207,11 @@ public class DataStore {
 	/**
 	 * Calculates distance
 	 * @return distance value
+	
+	/**
+	 * Gets a distance from DistanceMatrixAPI.java using data from this object
+	 * 
+	 * @return returns distance in miles
 	 */
 	public float calcDistance() {
 		float value = -1;

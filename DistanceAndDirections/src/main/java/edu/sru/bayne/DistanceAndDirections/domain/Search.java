@@ -1,11 +1,12 @@
 package edu.sru.bayne.DistanceAndDirections.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import org.springframework.lang.NonNull;
+import edu.sru.booser.datastore.DirectionsHolder;
 
 /*
  * Structure for the database to hold the information on the user
@@ -47,6 +48,8 @@ public class Search {
 	private String zip2;
 	private String country2;
 	
+	//public DirectionsHolder Holder;
+	
     
 	
 	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
@@ -56,6 +59,7 @@ public class Search {
     
     //stores directions
     @NonNull
+    @Column(name="directions",columnDefinition="LONGTEXT")
     private String directions;
     
     /**
@@ -311,8 +315,6 @@ public class Search {
 		this.country2 = country2;
 	}
 	
-	//Query will need address elements delimited by %20
-	// https://maps.googleapis.com/maps/api/distancematrix/xml?origins=806%20Graywyck%20Drive%20Seven%20Fields%20PA%2016046%20USA&destinations=401%20Suncrest%20Drive%20Cranberry%20Township%20PA%2016066%20USA&mode=driving&units=imperial&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
 	
 	/**
 	 * adds all address info together

@@ -53,6 +53,10 @@ public class Table {
 		return  table.get(temp.hashCode());
 	}
 	
+	public Boolean contains(String origin, String destination) {
+		return table.containsKey(origin.concat(destination).hashCode());
+	}
+	
 	/**
 	 * method to print out entire table to console
 	 * used for TESTING should be removed

@@ -71,7 +71,10 @@ public  class XSSFParser {
 		//can this be done better??
 		for(int i = 0; i < locations.length; i++) {
 			temp = locations[i].split("\\t");
-			dataTable.add(temp[0], temp[1]);
+			if(!dataTable.contains(temp[0], temp[1])) {
+				dataTable.add(temp[0], temp[1]);
+			}
+			
 		}
 		return dataTable;
 	}

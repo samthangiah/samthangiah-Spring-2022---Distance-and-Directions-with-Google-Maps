@@ -10,7 +10,7 @@ public class DataObject {
 	private String destination = "";
 	
 	private float distance = -1;
-	private String directions = "";
+	private String[] directions;
 	
 	public DataObject(String origin, String destination) {
 		this.origin = origin;
@@ -43,7 +43,7 @@ public class DataObject {
 	 * 
 	 * @return directions string
 	 */
-	public String getDirections() {
+	public String[] getDirections() {
 		//TODO: directions should probably be an array of direction strings
 		return directions;
 	}
@@ -72,7 +72,7 @@ public class DataObject {
 	 * 
 	 * @param directions the directions between the two locations
 	 */
-	public void setDirections(String directions) {
+	public void setDirections(String[] directions) {
 		this.directions = directions;
 	}
 

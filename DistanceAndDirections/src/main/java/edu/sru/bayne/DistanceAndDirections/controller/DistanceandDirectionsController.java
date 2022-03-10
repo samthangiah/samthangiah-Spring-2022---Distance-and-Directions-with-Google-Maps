@@ -83,9 +83,7 @@ public class DistanceandDirectionsController{
 		System.out.println("Address 1: " + search.getOrigin());
 		System.out.println("Address 2: " + search.getDestination());
 		
-		
-	    
-	    //hash table should be compared here before calling API
+	    //hash table is checked here before calling API
 	    if (search.getqDistance() >= 0.0) {
 	    	if(distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) {
 	    		search.setqDistance(distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
@@ -98,7 +96,6 @@ public class DistanceandDirectionsController{
 				distanceTable.add(search.getDestination(), search.getOrigin(), search.getqDistance());
 	    	}
 	    }
-	    
 	    
 	/*
 		if(search.getqDistance()==null) {

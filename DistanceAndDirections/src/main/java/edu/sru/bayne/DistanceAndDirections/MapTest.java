@@ -1,5 +1,9 @@
 package edu.sru.bayne.DistanceAndDirections;
-
+/**
+ * Test to print built URL with the CreateMap.java class and createMap(origin, destination) method.
+ * @author Gregory
+ *
+ */
 public class MapTest {
 
 	public static void main(String[] args) {

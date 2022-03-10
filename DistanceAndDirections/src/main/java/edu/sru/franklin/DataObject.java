@@ -11,9 +11,10 @@ public class DataObject {
 	private float distance = -1;
 	private String[] directions;
 	
-	public DataObject(String origin, String destination) {
+	public DataObject(String origin, String destination, float distance) {
 		this.origin = origin;
 		this.destination = destination;
+		this.distance = distance;
 	}
 
 	

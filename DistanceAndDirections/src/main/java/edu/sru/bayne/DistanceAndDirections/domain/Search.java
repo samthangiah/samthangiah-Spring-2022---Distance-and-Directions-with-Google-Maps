@@ -49,7 +49,7 @@ public class Search {
 	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
 	//stores distance
     @NonNull
-    private String distance;
+    private float distance;
     
     //stores directions
     @NonNull
@@ -69,12 +69,12 @@ public class Search {
 				this.getState1() + " " + this.getZip1() + " " + this.getCountry1());
 	};
 
-	public String getqDistance() {
+	public float getqDistance() {
 		return distance;
 	}
 
 	public void setqDistance(float distance) {
-		this.distance = String.valueOf(distance);
+		this.distance = distance; //String.valueOf(distance);
 	}
 
 	public long getId() {

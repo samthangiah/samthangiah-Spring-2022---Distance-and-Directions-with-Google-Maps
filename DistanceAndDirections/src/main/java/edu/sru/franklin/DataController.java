@@ -37,8 +37,8 @@ public class DataController {
 	 * @param origin The starting location
 	 * @param destination The ending location
 	 */
-	public void add(String origin, String destination) {
-		dataTable.add(origin, destination);
+	public void add(String origin, String destination, float distance) {
+		dataTable.add(origin, destination, distance);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class DataController {
 	public void addDistance(String origin, String destination, float distance) {
 		
 		if(!dataTable.contains(origin, destination)) {		
-			dataTable.add(origin, destination);
+			dataTable.add(origin, destination, distance);
 		}
 		
 		dataTable.getDataObject(origin, destination).setDistance(distance);	
@@ -94,7 +94,7 @@ public class DataController {
 	 */
 	public void addDirections(String origin, String destination, String[] directions) {
 		if(!dataTable.contains(origin, destination)) {		
-			dataTable.add(origin, destination);
+		//	dataTable.add(origin, destination);
 		}
 		
 		dataTable.getDataObject(origin, destination).setDirections(directions);	 	

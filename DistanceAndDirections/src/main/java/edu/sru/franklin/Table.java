@@ -17,9 +17,9 @@ public class Table {
 	 * Constructor for Table
 	 * @param size the size the inner hash table should be initialized to
 	 */
-	public Table(int size) //Creates table that holds a string pair and a float value
+	public Table() //Creates table that holds a string pair and a float value
 	{
-		table = new Hashtable<Integer, DataObject>(size);
+		table = new Hashtable<Integer, DataObject>();
 		
 	}
 	
@@ -38,9 +38,9 @@ public class Table {
 	 * @param origin starting location
 	 * @param destination ending location
 	 */
-	public void add(String origin, String destination) {
+	public void add(String origin, String destination, float distance) {
 		String temp = origin.concat(destination);
-		table.put(temp.hashCode(), new DataObject(origin, destination));
+		table.put(temp.hashCode(), new DataObject(origin, destination, distance));
 	}
 	/**
 	 * 

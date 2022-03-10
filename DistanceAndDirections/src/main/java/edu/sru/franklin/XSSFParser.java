@@ -65,14 +65,14 @@ public  class XSSFParser {
 		locations = output.split("\\r?\\n|\\r");
 		
 		//create new dataTable with size equal to dataset size
-		dataTable = new Table(locations.length);
+		dataTable = new Table();
 		
 		//cut up location pairs and add to the datatable
 		//can this be done better??
 		for(int i = 0; i < locations.length; i++) {
 			temp = locations[i].split("\\t");
 			if(!dataTable.contains(temp[0], temp[1])) {
-				dataTable.add(temp[0], temp[1]);
+			//	dataTable.add(temp[0], temp[1]);
 			}
 			
 		}

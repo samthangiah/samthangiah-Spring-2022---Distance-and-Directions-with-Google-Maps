@@ -1,3 +1,0 @@
-File:		DirectionsAPI
-Method:		parseDirections(String xmlIn)
-Issue:		Fails to create meaningful output.

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Query</title>
+
+ 	<script>
+<!-- concatAdd(): concatenates address into single, valid string to be sent to query. this ensures proper address format  -->
+<!-- won't work without full address input. Formatting has been moved to controller-->
+function concatAdd(){
+	
+	let x = document.getElementById("sa1").value + ", " + document.getElementById("ci1").value +
+	" " + document.getElementById("sp1").value + " " + document.getElementById("zp1").value +
+	", " + document.getElementById("co1").value;
+	
+	let y = document.getElementById("sa2").value + ", " + document.getElementById("ci2").value +
+	" " + document.getElementById("sp2").value + " " + document.getElementById("zp2").value +
+	", " + document.getElementById("co2").value;
+	
+	
+	console.log(x);
+	console.log(y);
+	document.getElementById("AddressForm").submit();
+	
+}
+</script>
+
+</head>
+<body>
+<div>
+	<h2>New Search Query</h2>
+	<hr color=black>
+		<p>Please enter 2 addresses to be queried</p>
+		<form action="/distance-matrix">
+			<button type="submit">Existing Queries</button>
+		</form>
+		
+</div>
+<form id="AddressForm" action="#" th:action="@{/add-query}" th:object="${search}" method="post">
+   <!--  Old way of adding addresses (Use until distance + directions APIs work with full address)
+    <label for="origin">Origin</label><br>
+  	<input type="text" th:field="*{origin}" id="origin" placeholder="Origin Address" 
+  		   required pattern="[A-Za-z]+_[A-Za-z]{2}"><br><br>
+    <span th:if="${#fields.hasErrors('origin')}" th:errors="*{origin}"></span>
+    <label for="destination">Destination</label><br>
+    <input type="text" th:field="*{destination}" id="destination" placeholder="Destination Address" 
+    	   required pattern="[A-Za-z]+_[A-Za-z]{2}">
+    <span th:if="${#fields.hasErrors('destination')}" th:errors="*{destination}"></span> -->
+ 				
+ 					<!-- Testing for final form view -->  
+ 					<!-- https://www.w3schools.com/html/html_forms_attributes.asp --> 
+ 	<h3>Address 1</h3>				 
+    <label for="sa1">Street</label><br>
+  	<input id="sa1" th:field="*{street1}" type="text" size="50" placeholder="Street" name="address1"><br>
+    <label for="ci1">City</label><br>
+  	<input id="ci1" th:field="*{city1}" type="text" size="20" placeholder="City" name="address1"><br>
+  	<label for="sp1">State/Province </label><br>
+  	<input id="sp1" th:field="*{state1}" type="text" size="20" placeholder="State" name="address1"><br>
+  	<label for="zp1">Zip/Postal Code </label><br>
+  	<input id="zp1" th:field="*{zip1}" type="text" size="10" placeholder="ZIP" name="address1"><br>
+  	<label for="col1">Country </label><br>
+  	<input id="co1" th:field="*{country1}" type="text" size="20" placeholder="Country" name="address1"><br>
+    
+    <h3>Address 2</h3>				
+    <label for="sa2">Street </label><br>
+  	<input id="sa2" th:field="*{street2}" type="text" size="50" placeholder="Street" name="address2"><br>
+    <label for="ci2">City </label><br>
+  	<input id="ci2" th:field="*{city2}" type="text" size="20" placeholder="City" name="address2"><br>
+  	<label for="sp2">State/Province </label><br>
+  	<input id="sp2" th:field="*{state2}" type="text" size="20" placeholder="State" name="address2"><br>
+  	<label for="zp2">Zip/Postal Code </label><br>
+  	<input id="zp2" th:field="*{zip2}" type="text" size="10" placeholder="ZIP" name="address2"><br>
+  	<label for="co2">Country </label><br>
+  	<input id="co2" th:field="*{country2}" type="text" size="20" placeholder="Country" name="address2"><br><br>
+  	<input id="submit" type="submit">
+  	
+  <!--	<input type="button" value="Generate Query" onclick="concatAdd()"><br> -->
+  
+    
+</form>
+</body>
+</html>

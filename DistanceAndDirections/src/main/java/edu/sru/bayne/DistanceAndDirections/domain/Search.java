@@ -40,6 +40,8 @@ public class Search {
 	private String zip2;
 	private String country2;
 	
+	private String mapURL;
+	
 	//public DirectionsHolder Holder;
 	
     
@@ -183,6 +185,14 @@ public class Search {
 
 	public void setCountry2(String country2) {
 		this.country2 = country2;
+	}
+
+	public String getMapURL() {
+		return mapURL;
+	}
+
+	public void setMapURL(String mapURL) {
+		this.mapURL = mapURL;
 	}
 	
 	

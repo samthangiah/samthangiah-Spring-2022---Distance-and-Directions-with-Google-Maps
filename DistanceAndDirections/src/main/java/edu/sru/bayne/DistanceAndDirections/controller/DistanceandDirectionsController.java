@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import edu.sru.bayne.DistanceAndDirections.domain.Search;
 import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
 import edu.sru.booser.datastore.*;
+import edu.sru.bayne.DistanceAndDirections.*;
 
 
 /**
@@ -107,18 +108,24 @@ public class DistanceandDirectionsController{
 	 */
 	@RequestMapping("/find-directions/{id}")
     public String pullDirections(@PathVariable("id") long id, Model model) {
+		
+		//selects specified query
         Search search = searchRepo.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid query:" + id));
         model.addAttribute("query", search);
        DirectionsHolder Holder = new DirectionsHolder();
         
-     // Call DistanceMatrixAPI to find and set distance
+     // Call DistanceMatrixAPI to find and set directions
 	    try {
 			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination(), Holder));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    
+	    //Generate URL for static map
+	    CreateMap myMap = new CreateMap();
+	    search.setMapURL(myMap.createMap(search.getOrigin(), search.getDestination()));
         
         System.out.println(search.getOrigin());
         System.out.println(search.getDestination());

@@ -1,11 +1,10 @@
 package edu.sru.bayne.DistanceAndDirections;
 
-import edu.sru.booser.datastore.DistanceMatrixAPI;
-
 /**
  * CreateMap.java
- * Builds URL with given address data (Origin and Destination) to create static map with google API.
+ * This class builds URL with given address data (Origin and Destination) to create static map with google API.
  * The URL includes markers for start and end locations.
+ * **(Unused)** valid maps are rendered using javascript + Google libraries. Static maps won't work for our goals
  * @author Gregory
  *
  */
@@ -24,7 +23,7 @@ public class CreateMap {
 	
 	private String finalURL = "";
 	/**
-	 * This class takes provided attributes such as map size, map type, markers and a path to form a URL
+	 * This method takes provided attributes such as map size, map type, markers and a path to form a URL
 	 * which calls Google to provide the desired static map.
 	 * @param origin is the address from which the user is beginning from
 	 * @param destination is the address to which the user intends to travel
@@ -46,7 +45,7 @@ public class CreateMap {
 		return url;
 	}
 	
-	//Getters and Setters
+	//Getters and Setters --------------------------------------------
 	public static String getBaseURL() {
 		return baseURL;
 	}
@@ -119,53 +118,9 @@ public class CreateMap {
 		this.destMarker = destMarker;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	public String getPath() {
 		return path;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	public void setPath(String path) {
 		this.path = path;

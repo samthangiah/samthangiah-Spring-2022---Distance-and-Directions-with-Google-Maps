@@ -13,7 +13,6 @@ import edu.sru.bayne.DistanceAndDirections.domain.Search;
 import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
 import edu.sru.booser.datastore.*;
 import edu.sru.franklin.Table;
-import edu.sru.bayne.DistanceAndDirections.*;
 
 
 /**
@@ -35,6 +34,16 @@ public class DistanceandDirectionsController{
 		this.searchRepo = searchRepo;
 	}
 	
+	/**
+	 * Used for testing and checking html/javascript with dynamic map.
+	 * WILL BE REMOVED once working and the javascript is cleaned up in resources
+	 */
+	@RequestMapping({"/maptest"})
+	public String testMyMap(Model model) {
+		model.addAttribute("points", searchRepo.findAll());
+		
+		return "mapstest.html";
+	}
 	/**
 	 * Mapping for the home index displaying Search entities (queries) currently stored 
 	 * in the database.
@@ -136,11 +145,11 @@ public class DistanceandDirectionsController{
 		}
 	    
 	    //Generate URL for static map
-	    CreateMap myMap = new CreateMap();
-	    search.setMapURL(myMap.createMap(search.getOrigin(), search.getDestination()));
+	    //CreateMap myMap = new CreateMap();
+	    //search.setMapURL(myMap.createMap(search.getOrigin(), search.getDestination()));
         
-        System.out.println(search.getOrigin());
-        System.out.println(search.getDestination());
+        System.out.println("Start at: " + search.getOrigin());
+        System.out.println("Arrive at: " + search.getDestination());
         
         return "/directions";
     }

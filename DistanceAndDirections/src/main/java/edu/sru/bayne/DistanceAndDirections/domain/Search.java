@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import org.springframework.lang.NonNull;
-import edu.sru.booser.datastore.DirectionsHolder;
 
 /**
  * Class depicting object model for query data stored in the H2 database. Holds start and 
@@ -40,7 +39,7 @@ public class Search {
 	private String zip2;
 	private String country2;
 	
-	private String mapURL;
+	private String cluster;
 	
 	//public DirectionsHolder Holder;
 	
@@ -187,12 +186,12 @@ public class Search {
 		this.country2 = country2;
 	}
 
-	public String getMapURL() {
-		return mapURL;
+	public String getCluster() {
+		return cluster;
 	}
 
-	public void setMapURL(String mapURL) {
-		this.mapURL = mapURL;
+	public void setCluster(String cluster) {
+		this.cluster = cluster;
 	}
 	
 	

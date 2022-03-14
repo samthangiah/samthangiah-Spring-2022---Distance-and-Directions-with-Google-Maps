@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<style>
+	#map {
+		height: 600px;
+		width: 100%;
+	}
+	</style>
+	
+	<script>
+	//creates map with desired traits and behaviors
+	function initMap(){
+		const tempCenter = {lat: 41.0630 , lng: -80.0412 }
+		const map = new google.maps.Map(document.getElementById("map"), {
+			zoom: 13,
+			center: tempCenter,
+			streetViewControl: false,		
+		});
+		
+		// set temporary marker at SRU coordinates
+		const marker = new google.maps.Marker({
+			label: "SRU",
+			position: tempCenter,
+			map: map,
+		});
+		
+		//when map is clicked on, calls marker function
+		map.addListener("click", (e) => {
+		    placeMarkerAndPanTo(e.latLng, map);
+		    //applies lat/lng info to text area
+		    document.getElementById("LatPos").textContent = e.latLng;
+		});
+		
+		//makes marker at the location and pans to it. sets to draggable, so we may adjust the position at will
+		//Also set to clickable to grab coordinates (should also be used for implementing delete/edit/etc.)
+		function placeMarkerAndPanTo(latLng, map) {
+		  const marker = new google.maps.Marker({
+		    position: latLng,
+		    map: map,
+		    draggable: true,
+		    clickable: true,
+		  });
+		 
+		  //add listener for on-click events
+		  marker.addListener("click", (e) => {
+			getCoord(e.latLng);
+			highlightMarker(marker)
+			});
+		  
+		  map.panTo(latLng);
+		};
+			
+	};
+	
+	function getCoord(latLng){
+		document.getElementById("LatPos").textContent = latLng;
+	}
+	
+	// Following functions are used to bounce a marker to indicate which is being viewed, and ends the animation on a timer
+	function highlightMarker(marker){
+	marker.setAnimation(google.maps.Animation.BOUNCE);
+	setTimeout(stopHighlight, 2000, marker);
+	}
+	
+	function stopHighlight(marker){
+		marker.setAnimation(null);
+	}
+	
+</script>
+	
+
+
+<meta charset="ISO-8859-1">
+<title>Experimenting with Dynamic Map</title>
+</head>
+<body>
+	<h1>Map Testing area</h1>
+	<hr color=black>
+<div th:switch="${points}">
+	<h3>Please enter Origin and Destination</h3>
+	<p><i>Need another point?</i></p>
+		<form action="/newsearch">
+			<button type="submit">add Query</button>
+		</form>
+	
+		
+			<form action="/distance-matrix">
+			<button type="submit">Back to Home</button>
+			</form>
+		
+		
+		<h2>Queries</h2>
+            <table border=".5" bordercolor="#A9A9A9">
+                <thead>
+                	<!-- Headings for query table -->
+                    <tr>
+                        <th>Origin       </th>
+                        <th>Destination  </th>
+                        <th>Distance (mi)</th>
+                        <th>Directions   </th>
+                        <th>Delete		 </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- Shows data for each entity found in database -->
+                <tr th:each="search : ${points}">
+                    <td th:text="${search.getOrigin()}"></td>
+                    <td th:text="${search.getDestination()}"></td>
+                    <td th:text="${search.getqDistance()}"></td>
+                    <td><a th:href="@{/find-directions/{id}(id=${search.getId()})}">Directions</a></td>
+                    <td><a th:href="@{/delete/{id}(id=${search.getId()})}">Delete</a></td>
+                </tr>
+            	</tbody>
+       		</table>
+        </div>
+
+		<div>
+        <h2>My Map</h2>
+        <hr>
+        <h3> Marker Coordinates: </h3> <p id="LatPos">Coordinates will be shown here!</p>
+        	<div id="map"></div>
+        	
+        	<script async
+    		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg&callback=initMap">
+			</script>
+			<!-- Script containing methods for building dynamic map on page. Should be moved to its own .js file once issues are resolved or testing is complete -->
+
+        </div>
+	
+</body>
+</html>

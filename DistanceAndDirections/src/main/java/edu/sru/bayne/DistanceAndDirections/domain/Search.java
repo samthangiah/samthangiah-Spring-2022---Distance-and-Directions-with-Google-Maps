@@ -1,11 +1,15 @@
 package edu.sru.bayne.DistanceAndDirections.domain;
 
+import java.io.IOException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import org.springframework.lang.NonNull;
+
+import edu.sru.bayne.DistanceAndDirections.GeoGrabber;
 
 /**
  * Class depicting object model for query data stored in the H2 database. Holds start and 
@@ -27,34 +31,86 @@ public class Search {
 	@NonNull
     private String destination;
 	
+	// Address 1 info
 	private String street1;
 	private String city1;
 	private String state1;
 	private String zip1;
 	private String country1;
+	private String lng1;
+	private String lat1;
 	
+	// Address 2 info
 	private String street2;
 	private String city2;
 	private String state2;
 	private String zip2;
 	private String country2;
+	private String lng2;
+	private String lat2;
 	
 	private String cluster;
 	
-	//public DirectionsHolder Holder;
+	//finding and setting coordinates from address------------------------------------------------------------------------------------
+	/**
+	 * This method uses GeoGrabber class to find and set coordinates for a provided human-readable address.
+	 * The coordinates are set to both the Address1 (origin) data and the Address2 (destination) data.
+	 * @param origin
+	 * @param destination
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void geoBothAddressCoordinates(String origin, String destination) throws IOException, InterruptedException {
+		geoAddress1ToCoordinates(origin);
+		geoAddress2ToCoordinates(destination);
+	}
 	
-    
+	/**
+	 * This method uses GeoGrabber class to find and set coordinates for a provided human-readable address.
+	 * The coordinates are set to the Address1 (origin) data.
+	 * @param address
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void geoAddress1ToCoordinates(String address) throws IOException, InterruptedException {
+		GeoGrabber geo = new GeoGrabber(address);
+		geo.fetchCoordinatesFromAddress(geo.buildFromAddress(address));
+		this.setLng1(geo.getLng());
+		this.setLat1(geo.getLat());
+	}
 	
-	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
-	//stores distance
+	/**
+	 * This method uses GeoGrabber class to find and set coordinates for a provided human-readable address.
+	 * The coordinates are set to the Address2 (destination) data.
+	 * @param address
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void geoAddress2ToCoordinates(String address) throws IOException, InterruptedException {
+		GeoGrabber geo = new GeoGrabber(address);
+		geo.fetchCoordinatesFromAddress(geo.buildFromAddress(address));
+		this.setLng2(geo.getLng());
+		this.setLat2(geo.getLat());
+	}
+	//--------------------------------------------------------------------------------------------------------------------------------
+	
+	//finding and setting coordinates from lng/lat
+	//
+	// needs implementation
+	
+	
+	//stores distance between points
     @NonNull
     private float distance;
     
-    //stores directions
+    //stores directions from address1 to address2
     @NonNull
     @Column(name="directions",columnDefinition="LONGTEXT")
     private String directions;
     
+	
+    
+	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
     public String getOrigin() {
 		return origin;
 	}
@@ -192,6 +248,38 @@ public class Search {
 
 	public void setCluster(String cluster) {
 		this.cluster = cluster;
+	}
+
+	public String getLng1() {
+		return lng1;
+	}
+
+	public void setLng1(String lng1) {
+		this.lng1 = lng1;
+	}
+
+	public String getLat1() {
+		return lat1;
+	}
+
+	public void setLat1(String lat1) {
+		this.lat1 = lat1;
+	}
+
+	public String getLng2() {
+		return lng2;
+	}
+
+	public void setLng2(String lng2) {
+		this.lng2 = lng2;
+	}
+
+	public String getLat2() {
+		return lat2;
+	}
+
+	public void setLat2(String lat2) {
+		this.lat2 = lat2;
 	}
 	
 	

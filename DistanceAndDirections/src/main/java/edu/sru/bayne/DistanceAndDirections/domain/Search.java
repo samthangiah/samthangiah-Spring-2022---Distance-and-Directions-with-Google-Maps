@@ -86,8 +86,8 @@ public class Search {
 	public void geoAddress1ToCoordinates(String address) throws IOException, InterruptedException {
 		GeoGrabber geo = new GeoGrabber(address);
 		geo.fetchCoordinatesFromAddress(geo.buildFromAddress(address));
-		this.setLng1(geo.getLng());
 		this.setLat1(geo.getLat());
+		this.setLng1(geo.getLng());
 	}
 	
 	/**
@@ -100,14 +100,29 @@ public class Search {
 	public void geoAddress2ToCoordinates(String address) throws IOException, InterruptedException {
 		GeoGrabber geo = new GeoGrabber(address);
 		geo.fetchCoordinatesFromAddress(geo.buildFromAddress(address));
-		this.setLng2(geo.getLng());
 		this.setLat2(geo.getLat());
+		this.setLng2(geo.getLng());
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------
 	
 	//finding and setting coordinates from lng/lat
-	//
-	// needs implementation ----------------------------------------------------------------------------------------------------------	
+	public void geoC2A(String OriLat, String OriLng, String DesLat, String DesLng) throws IOException, InterruptedException {
+        geoOriginAFromC(OriLat, OriLng);
+        geoDestinationAFromC(DesLat, DesLng);
+    }
+
+    public void geoOriginAFromC(String lat, String lng) throws IOException, InterruptedException {
+        GeoGrabber geo = new GeoGrabber(lat, lng);
+        geo.fetchAddressFromCoordinates(geo.buildFromCoordinates(lat, lng));
+        this.setOrigin(geo.getAddress());
+    }
+
+    public void geoDestinationAFromC(String lat, String lng)throws IOException, InterruptedException {
+        GeoGrabber geo = new GeoGrabber(lat,lng);
+        geo.fetchAddressFromCoordinates(geo.buildFromCoordinates(lat, lng));
+        this.setDestination(geo.getAddress());
+    }
+  //--------------------------------------------------------------------------------------------------------------------------------
 	
 	
 	

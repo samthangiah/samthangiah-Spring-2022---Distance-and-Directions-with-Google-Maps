@@ -51,6 +51,17 @@ public class Search {
 	
 	private String cluster;
 	
+	//stores distance between points
+    @NonNull
+    private float distance;
+    
+    //stores directions from address1 to address2
+    @NonNull
+    @Column(name="directions",columnDefinition="LONGTEXT")
+    private String directions;
+    
+    
+	
 	//finding and setting coordinates from address------------------------------------------------------------------------------------
 	/**
 	 * This method uses GeoGrabber class to find and set coordinates for a provided human-readable address.
@@ -96,21 +107,15 @@ public class Search {
 	
 	//finding and setting coordinates from lng/lat
 	//
-	// needs implementation
+	// needs implementation ----------------------------------------------------------------------------------------------------------	
 	
 	
-	//stores distance between points
-    @NonNull
-    private float distance;
-    
-    //stores directions from address1 to address2
-    @NonNull
-    @Column(name="directions",columnDefinition="LONGTEXT")
-    private String directions;
+	
+	
     
 	
     
-	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs
+	// Setters and getters are named getqDistance, getqDirections, etc to avoid name issues with respective APIs ----------------------
     public String getOrigin() {
 		return origin;
 	}

@@ -149,8 +149,8 @@ public class GeoGrabber {
 		}
 		
 		System.out.println("Address:   " + newReq.getAddress());
-		System.out.println("Longitude: " + newReq.getAddress());
-		System.out.println("Latitude:  " + newReq.getAddress());
+		System.out.println("Longitude: " + newReq.getLng());
+		System.out.println("Latitude:  " + newReq.getLat());
 	
 	}
 }

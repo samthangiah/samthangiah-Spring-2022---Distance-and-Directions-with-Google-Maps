@@ -8,7 +8,7 @@
 	}
 	</style>
 	
-	<script>
+	<script th:inline="javascript">
 	//creates map with desired traits and behaviors
 	function initMap(){
 		const tempCenter = {lat: 41.0630 , lng: -80.0412 }
@@ -42,22 +42,39 @@
 		    clickable: true,
 		  });
 		 
-		  //add listener for on-click events
+		// make info window
+			const infowindow = new google.maps.InfoWindow({
+			content: infoContext,
+		});
+		
+		// add listener for on-click events
 		  marker.addListener("click", (e) => {
-			getCoord(e.latLng);
-			highlightMarker(marker)
+			displayCoord(e.latLng);
+			highlightMarker(marker);
+	
 			});
+		
+		  marker.addListener("dblclick", (e) => {
+				infowindow.open({
+					  map: map,
+				      anchor: marker,
+				      shouldFocus: true,
+				    });
+				});
 		  
 		  map.panTo(latLng);
 		};
 			
 	};
 	
-	function getCoord(latLng){
+	
+	function displayCoord(latLng){
 		document.getElementById("LatPos").textContent = latLng;
 	}
 	
-	// Following functions are used to bounce a marker to indicate which is being viewed, and ends the animation on a timer
+	// Following functions are used to bounce a marker to indicate 
+	// which is being viewed, and ends the animation on a timer
+	
 	function highlightMarker(marker){
 	marker.setAnimation(google.maps.Animation.BOUNCE);
 	setTimeout(stopHighlight, 2000, marker);
@@ -66,6 +83,25 @@
 	function stopHighlight(marker){
 		marker.setAnimation(null);
 	}
+	//-----------------------------------------------------------------
+	
+	
+	// Object using data from database to display within info windows
+	// Included: Address, Coordinates, Cluster
+	// Not yet added: add/edit/delete **MUST CONNECT TO DATA WITH THYMELEAF**
+	const infoContext = 
+		'<div id="context" th:switch="[[${points}]]">' +
+		'<h1 id="heading> Test Heading </h1>"' +
+		'<h3 id="address"> Address </h3>' +
+		'<p th:text="[[${points.getOrigin()}]]"> Address goes here! </p>' +
+		'<h3 id="coord"> Coordinates </h3>' +
+		'<p> Lat/Lng goes here! </p>' +
+		'<h3 id="cluster"> Cluster </h3>' +
+		'<p> Cluster # goes here! </p>' +
+		'</div>';
+	
+		
+	
 	
 </script>
 	

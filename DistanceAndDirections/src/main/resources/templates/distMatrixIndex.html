@@ -1,12 +1,118 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+	<style>
+	#map{
+		height: 600px;
+		width: 100%;
+	}
+	</style>
+	
+	<script>
+	//creates map with desired traits and behaviors
+	function initMap(){
+		const tempCenter = {lat: 41.0630 , lng: -80.0412 }
+		const map = new google.maps.Map(document.getElementById("map"), {
+			zoom: 13,
+			center: tempCenter,
+			streetViewControl: false,		
+		});
+		
+		// set temporary marker at SRU coordinates
+		const marker = new google.maps.Marker({
+			label: "SRU",
+			position: tempCenter,
+			map: map,
+		});
+		
+		//when map is clicked on, calls marker function
+		map.addListener("click", (e) => {
+		    placeMarkerAndPanTo(e.latLng, map);
+		    //applies lat/lng info to text area
+		    document.getElementById("LatPos").textContent = e.latLng;
+		});
+		
+		//makes marker at the location and pans to it. sets to draggable, so we may adjust the position at will
+		//Also set to clickable to grab coordinates (should also be used for implementing delete/edit/etc.)
+		function placeMarkerAndPanTo(latLng, map) {
+		  const marker = new google.maps.Marker({
+		    position: latLng,
+		    map: map,
+		    draggable: true,
+		    clickable: true,
+		  });
+		 
+		// make info window
+			const infowindow = new google.maps.InfoWindow({
+			content: infoContext,
+		});
+		
+		// add listener for on-click events
+		  marker.addListener("click", (e) => {
+			displayCoord(e.latLng);
+			highlightMarker(marker);
+	
+			});
+		
+		// double-click to open info window
+		  marker.addListener("dblclick", (e) => {
+				infowindow.open({
+					  map: map,
+				      anchor: marker,
+				      shouldFocus: true,
+				    });
+				});
+		  
+		  map.panTo(latLng);
+		};
+			
+	};
+	
+	
+	function displayCoord(latLng){
+		document.getElementById("LatPos").textContent = latLng;
+	}
+	
+	// Following functions are used to bounce a marker to indicate 
+	// which is being viewed, and ends the animation on a timer
+	
+	function highlightMarker(marker){
+	marker.setAnimation(google.maps.Animation.BOUNCE);
+	setTimeout(stopHighlight, 2000, marker);
+	}
+	
+	function stopHighlight(marker){
+		marker.setAnimation(null);
+	}
+	//-----------------------------------------------------------------
+	
+	
+	// Object using data from database to display within info windows
+	// Included: Address, Coordinates, Cluster
+	// Not yet added: add/edit/delete **MUST CONNECT TO DATA WITH THYMELEAF**
+	const infoContext = 
+		'<div id="context">' +
+		'<h1 id="heading> Test Heading </h1>"' +
+		'<h3 id="address"> Address </h3>' +
+		'<p> Address goes here! </p>' +
+		'<h3 id="coord"> Coordinates </h3>' +
+		'<p> Lat/Lng goes here! </p>' +
+		'<h3 id="cluster"> Cluster </h3>' +
+		'<p> Cluster # goes here! </p>' +
+		'</div>';
+	
+</script>
+
+
 <meta charset="ISO-8859-1">
 <title>Find Distance</title>
 </head>
+
+
 <body>
 	<h1>Calculating Distance and Directions</h1>
 	<hr color=black>
+	
 <div th:switch="${dist}">
 	<h3>Please enter Origin and Destination</h3>
 	<p><i>Please select "New Query" or view existing ones below</i></p>
@@ -14,9 +120,7 @@
 		<form action="/newsearch">
 			<button type="submit">New Query</button>
 		</form>
-		<form action="/maptest">
-			<button type="submit">To Map Area</button>
-		</form>
+		
 		<h2>Queries</h2>
             <table border=".5" bordercolor="#A9A9A9">
                 <thead>
@@ -40,9 +144,23 @@
                 </tr>
             	</tbody>
        		</table>
-       		
         </div>
 </div>
+		<div>
+        <h2>My Map</h2>
+        <hr>
+        <h3> Marker Coordinates: </h3> 
+        <p id="LatPos">Coordinates will be shown here!</p>
+        
+        	<div id="map"></div>
+        	
+        	<script async
+    		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg&callback=initMap">
+			</script>
+			<!-- Script containing methods for building dynamic map on page. Should be moved to its own .js file once issues are resolved or testing is complete -->
+
+		</div>
+
 	
 </body>
 </html>

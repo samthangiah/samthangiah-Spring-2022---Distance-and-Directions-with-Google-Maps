@@ -34,16 +34,21 @@ public class DistanceandDirectionsController{
 		this.searchRepo = searchRepo;
 	}
 	
+	
+	/*
 	/**
 	 * Used for testing and checking html/javascript with dynamic map.
 	 * WILL BE REMOVED once working and the javascript is cleaned up in resources
-	 */
+	 *
 	@RequestMapping({"/maptest"})
 	public String testMyMap(Model model) {
 		model.addAttribute("points", searchRepo.findAll());
 		
 		return "mapstest.html";
 	}
+	*/
+	
+	
 	/**
 	 * Mapping for the home index displaying Search entities (queries) currently stored 
 	 * in the database.

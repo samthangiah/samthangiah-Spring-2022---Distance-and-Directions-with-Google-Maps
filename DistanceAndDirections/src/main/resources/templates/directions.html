@@ -25,21 +25,20 @@ formatDirections();
 		</form>
 		
 		<h2>Directions</h2>
-		<hr>
 		
 	<div>
+		<hr>
 		<p id="start"><strong style="font-size:20px">Starting from: </strong><span th:text="${query.getOrigin()}"></span></p>
+		<hr>
 		<p id="directions" >Directions Not Found</p>
+		<hr>
 		<p id="end"><strong style="font-size:20px">Arriving at: </strong><span th:text="${query.getDestination()}"></span></p>
-	</div>
-	<div>
-		<hr>
-		<img id="map" src="">
 		<hr>
 	</div>
 	
 	
-	<a id="mapId" href="" target="_blank"><button>View Map in New Tab</button></a>
+	
+
 	
 </body>
 </html>

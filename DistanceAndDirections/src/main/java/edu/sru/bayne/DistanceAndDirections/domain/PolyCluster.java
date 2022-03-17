@@ -2,7 +2,7 @@ package edu.sru.bayne.DistanceAndDirections.domain;
 
 /**
  * Class to organize each set of long/lat coordinates into clusters.
- * (NOT YET IMPLEMENTED)
+ * (NOT YET IMPLEMENTED) **may be unnecessary, will likley be included in search class**
  * @author Gregory
  *
  */

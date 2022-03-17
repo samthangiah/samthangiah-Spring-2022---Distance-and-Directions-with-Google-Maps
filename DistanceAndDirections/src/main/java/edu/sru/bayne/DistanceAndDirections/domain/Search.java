@@ -271,6 +271,16 @@ public class Search {
 	}
 
 	public String getLng1() {
+		
+		if(lng1 != null) {
+			return lng1;
+		}
+		//if it doesn't exist, it must be queried
+		try {
+			this.geoAddress1ToCoordinates(this.getOrigin());
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
 		return lng1;
 	}
 
@@ -279,6 +289,16 @@ public class Search {
 	}
 
 	public String getLat1() {
+		
+		if(lng1 != null) {
+			return lat1;
+		}
+		//if it doesn't exist, it must be queried		
+		try {
+			this.geoAddress1ToCoordinates(this.getOrigin());
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}	
 		return lat1;
 	}
 
@@ -287,6 +307,15 @@ public class Search {
 	}
 
 	public String getLng2() {
+		if(lng2 != null) {
+			return lng2;
+		}
+		//if it doesn't exist, it must be queried		
+		try {
+			this.geoAddress2ToCoordinates(this.getDestination());
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
 		return lng2;
 	}
 
@@ -295,6 +324,15 @@ public class Search {
 	}
 
 	public String getLat2() {
+		if(lat2 != null) {
+			return lat2;
+		}
+		//if it doesn't exist, it must be queried		
+		try {
+			this.geoAddress2ToCoordinates(this.getDestination());
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}	
 		return lat2;
 	}
 

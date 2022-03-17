@@ -8,53 +8,61 @@
 	}
 	</style>
 	
-	<script>
-	//creates map with desired traits and behaviors
+	<script th:inline="javascript">
+	let map;
+	let markers = [];
+<!--//creates map with desired traits and behaviors-->
 	function initMap(){
-		const tempCenter = {lat: 41.0630 , lng: -80.0412 }
-		const map = new google.maps.Map(document.getElementById("map"), {
-			zoom: 13,
-			center: tempCenter,
+	<!--//const tempCenter = {lat: 41.0630 , lng: -80.0412 }-->
+			map = new google.maps.Map(document.getElementById("map"), {
+			zoom: 7,
+			center: {lat: 40.7033 , lng: -77.5945 },
 			streetViewControl: false,		
 		});
-		
+		<!--
 		// set temporary marker at SRU coordinates
-		const marker = new google.maps.Marker({
-			label: "SRU",
-			position: tempCenter,
-			map: map,
-		});
+		//const marker = new google.maps.Marker({
+			//label: "SRU",
+			//position: tempCenter,
+			//map: map,
+		//});-->
 		
-		//when map is clicked on, calls marker function
+	<!--//when map is clicked on, calls marker function-->
 		map.addListener("click", (e) => {
-		    placeMarkerAndPanTo(e.latLng, map);
-		    //applies lat/lng info to text area
+		    placeMarker(e.latLng, map);
+		   <!-- //applies lat/lng info to text area-->
 		    document.getElementById("LatPos").textContent = e.latLng;
 		});
 		
-		//makes marker at the location and pans to it. sets to draggable, so we may adjust the position at will
-		//Also set to clickable to grab coordinates (should also be used for implementing delete/edit/etc.)
-		function placeMarkerAndPanTo(latLng, map) {
+		<!-- addPair(40.7220003, -80.1291846, 40.8641043, -79.8938038) -->
+		google.maps.event.addDomListener(document.getElementById("dispbutt"), 'click', () =>{
+			newPair(40.7220003, -80.1291846, 40.8641043, -79.8938038);
+		});
+		
+	<!--//makes marker at the location and pans to it. sets to draggable, so we may adjust the position at will
+	    //Also set to clickable to grab coordinates (should also be used for implementing delete/edit/etc.)-->
+		function placeMarker(latLng, map) {
 		  const marker = new google.maps.Marker({
 		    position: latLng,
 		    map: map,
 		    draggable: true,
 		    clickable: true,
 		  });
-		 
-		// make info window
+		  
+		  
+		  <!--//make info window-->
 			const infowindow = new google.maps.InfoWindow({
 			content: infoContext,
 		});
 		
-		// add listener for on-click events
+		<!--//add listener for on-click events-->
 		  marker.addListener("click", (e) => {
 			displayCoord(e.latLng);
 			highlightMarker(marker);
 	
 			});
 		
-		// double-click to open info window
+		<!--//double-click to open info window-->
 		  marker.addListener("dblclick", (e) => {
 				infowindow.open({
 					  map: map,
@@ -63,8 +71,27 @@
 				    });
 				});
 		  
-		  map.panTo(latLng);
+		  markers.push(marker);
 		};
+		
+		function newPair(lat1, lng1, lat2, lng2){
+			deleteMarkers();
+			const add1 = new google.maps.LatLng(lat1, lng1);
+			const add2 = new google.maps.LatLng(lat2, lng2);
+			placeMarker(add1, map);
+			placeMarker(add2, map);	
+			
+		}
+		
+		function deleteMarkers(){
+			for (let i = 0; i < markers.length; i++) {
+			    markers[i].setMap(null);
+			  }
+			markers = [];
+		}
+	
+		
+
 			
 	};
 	
@@ -73,8 +100,8 @@
 		document.getElementById("LatPos").textContent = latLng;
 	}
 	
-	// Following functions are used to bounce a marker to indicate 
-	// which is being viewed, and ends the animation on a timer
+<!--//Following functions are used to bounce a marker to indicate 
+	//which is being viewed, and ends the animation on a timer -->
 	
 	function highlightMarker(marker){
 	marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -84,12 +111,11 @@
 	function stopHighlight(marker){
 		marker.setAnimation(null);
 	}
-	//-----------------------------------------------------------------
+	<!------------------------------------------------------------------->
 	
-	
-	// Object using data from database to display within info windows
-	// Included: Address, Coordinates, Cluster
-	// Not yet added: add/edit/delete **MUST CONNECT TO DATA WITH THYMELEAF**
+<!-- //Object using data from database to display within info windows
+	 //Included: Address, Coordinates, Cluster
+	 //Not yet added: add/edit/delete **MUST CONNECT TO DATA WITH THYMELEAF**-->
 	const infoContext = 
 		'<div id="context">' +
 		'<h1 id="heading> Test Heading </h1>"' +
@@ -131,6 +157,7 @@
                         <th>Distance (mi)</th>
                         <th>Directions   </th>
                         <th>Delete		 </th>
+                        <th>To Map </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -141,6 +168,7 @@
                     <td th:text="${search.getqDistance()}"></td>
                     <td><a th:href="@{/find-directions/{id}(id=${search.getId()})}">Directions</a></td>
                     <td><a th:href="@{/delete/{id}(id=${search.getId()})}">Delete</a></td>
+                    <td><button id="dispbutt">Display</button></td>
                 </tr>
             	</tbody>
        		</table>

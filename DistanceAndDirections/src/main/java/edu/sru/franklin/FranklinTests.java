@@ -8,7 +8,6 @@ public class FranklinTests {
 		controller.readFromTextFile();
 		controller.writeToTextFile();
 		controller.printTable();
-		
 	}
 
 }

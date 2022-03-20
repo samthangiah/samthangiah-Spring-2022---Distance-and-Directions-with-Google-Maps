@@ -18,8 +18,7 @@ public class DataController {
 	 
 	
 	/**
-	 * default constructor
-	 * Creates instance of parser from addresses.xlsx
+	 * creates instance of text file to be used
 	 */
 	public DataController() { 		
 		File dataFile = new File("data.txt");
@@ -31,6 +30,9 @@ public class DataController {
 		}
 	}
 	
+	/**
+	 * Creates instance of parser that reads from excel doc and adds to hashtable
+	 */
 	public void readFromExcelDoc(String fileName) {
 		parser = new XSSFParser();
 		parser.parseFromFile(fileName);
@@ -42,6 +44,9 @@ public class DataController {
 		}
 	}
 	
+	/**
+	 * Reads table from hashtable. Has try and catch for any errors that could occur.
+	 */
 	public void readFromTextFile() {
 		try {
 			FileInputStream fileInputStream = new FileInputStream("data.txt");
@@ -65,6 +70,9 @@ public class DataController {
 		}
 	}
 	
+	/**
+	 * Writes to text file. Checks if data table is null. if not, tries to write to file.
+	 */
 	public void writeToTextFile() {
 		if(dataTable == null) {
 			throw new NullPointerException("Data Table is null");
@@ -152,6 +160,10 @@ public class DataController {
 		
 		dataTable.getDataObject(origin, destination).setDirections(directions);	 	
 	}
+	
+	/**
+	 * prints data table
+	 */
 	public void printTable() {
 		dataTable.printTable();
 	}

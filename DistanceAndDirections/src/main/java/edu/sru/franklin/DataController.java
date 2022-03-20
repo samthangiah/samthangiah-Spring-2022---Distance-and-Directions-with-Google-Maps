@@ -1,5 +1,13 @@
 package edu.sru.franklin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class DataController {
 	
 	private String inputFileName = "Addresses.xlsx";
@@ -14,23 +22,68 @@ public class DataController {
 	 * Creates instance of parser from addresses.xlsx
 	 */
 	public DataController() { 		
-		parser = new XSSFParser();
-		parser.parseFromFile(inputFileName);
-		dataTable = parser.newDataTableFromFile();
-		dataTable.printTable();
-
+		File dataFile = new File("data.txt");
+		try {
+			System.out.println(dataFile.createNewFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	/**
-	 * constructor allows option to pass different file for parser
-	 * @param fileName The file being used
-	 */
-	public DataController(String fileName) {
+	public void readFromExcelDoc(String fileName) {
 		parser = new XSSFParser();
 		parser.parseFromFile(fileName);
-		dataTable = parser.newDataTableFromFile();
-		dataTable.printTable();
+		if(dataTable == null) {
+			dataTable = parser.newDataTableFromFile();
+		}
+		else {
+			//add code if the table already exists, should we merge?
+		}
 	}
+	
+	public void readFromTextFile() {
+		try {
+			FileInputStream fileInputStream = new FileInputStream("data.txt");
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			if(dataTable == null) {
+				dataTable = (Table) objectInputStream.readObject();
+			}
+			else {
+				
+			}
+			objectInputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeToTextFile() {
+		if(dataTable == null) {
+			throw new NullPointerException("Data Table is null");
+		}
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("data.txt");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+			objectOutputStream.writeObject(dataTable);
+			objectOutputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Wrote project data to data.txt");
+	}
+	
 	
 	/**
 	 * adds origin and destinations to table.
@@ -99,7 +152,9 @@ public class DataController {
 		
 		dataTable.getDataObject(origin, destination).setDirections(directions);	 	
 	}
-	
+	public void printTable() {
+		dataTable.printTable();
+	}
 	
 }
 

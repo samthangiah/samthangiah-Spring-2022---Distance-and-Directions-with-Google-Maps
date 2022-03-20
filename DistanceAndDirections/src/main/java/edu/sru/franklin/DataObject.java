@@ -1,8 +1,10 @@
 package edu.sru.franklin;
 
+import java.io.Serializable;
+
 //This class is a simple container for all the data we want to have stored in the hash table. 
 //just inner fields and getters/setters, should speak for itself.
-public class DataObject {	
+public class DataObject implements Serializable {	
 	
 	
 	private String origin = "";

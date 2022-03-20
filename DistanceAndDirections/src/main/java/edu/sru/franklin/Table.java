@@ -1,5 +1,6 @@
 package edu.sru.franklin;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -8,7 +9,7 @@ import java.util.Hashtable;
 //Included Functions: size(), addToTable(), containsKey(), contains(), removeFromTable(), getFromTable(), getTable()
 
 //TODO: test for hashtable stackoverflow handling
-public class Table {
+public class Table implements Serializable{
 	
 	
 	private Hashtable<Integer, DataObject> table;

@@ -106,8 +106,8 @@ public class DistanceandDirectionsController{
 	    	else {
 	    		search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
 				System.out.println("Distance called API to set to: " + search.getqDistance());
-				distanceTable.add(search.getOrigin(), search.getDestination(), search.getqDistance());
-				distanceTable.add(search.getDestination(), search.getOrigin(), search.getqDistance());
+				distanceTable.add(search.getOrigin(), search.getDestination());
+				distanceTable.add(search.getDestination(), search.getOrigin());
 	    	}
 	    }
 	    

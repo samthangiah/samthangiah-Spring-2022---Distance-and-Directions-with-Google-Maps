@@ -38,8 +38,9 @@ public class Table {
 	 * @param origin starting location
 	 * @param destination ending location
 	 */
-	public void add(String origin, String destination, float distance) {
+	public void add(String origin, String destination) {
 		String temp = origin.concat(destination);
+		float distance = 0;
 		table.put(temp.hashCode(), new DataObject(origin, destination, distance));
 	}
 	/**

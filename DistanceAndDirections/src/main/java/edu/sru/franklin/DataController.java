@@ -1,5 +1,13 @@
 package edu.sru.franklin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class DataController {
 	
 	private String inputFileName = "Addresses.xlsx";
@@ -10,35 +18,88 @@ public class DataController {
 	 
 	
 	/**
-	 * default constructor
-	 * Creates instance of parser from addresses.xlsx
+	 * creates instance of text file to be used
 	 */
 	public DataController() { 		
-		parser = new XSSFParser();
-		parser.parseFromFile(inputFileName);
-		dataTable = parser.newDataTableFromFile();
-		dataTable.printTable();
-
+		File dataFile = new File("data.txt");
+		try {
+			System.out.println(dataFile.createNewFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
-	 * constructor allows option to pass different file for parser
-	 * @param fileName The file being used
+	 * Creates instance of parser that reads from excel doc and adds to hashtable
 	 */
-	public DataController(String fileName) {
+	public void readFromExcelDoc(String fileName) {
 		parser = new XSSFParser();
 		parser.parseFromFile(fileName);
-		dataTable = parser.newDataTableFromFile();
-		dataTable.printTable();
+		if(dataTable == null) {
+			dataTable = parser.newDataTableFromFile();
+		}
+		else {
+			//add code if the table already exists, should we merge?
+		}
 	}
+	
+	/**
+	 * Reads table from hashtable. Has try and catch for any errors that could occur.
+	 */
+	public void readFromTextFile() {
+		try {
+			FileInputStream fileInputStream = new FileInputStream("data.txt");
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			if(dataTable == null) {
+				dataTable = (Table) objectInputStream.readObject();
+			}
+			else {
+				
+			}
+			objectInputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Writes to text file. Checks if data table is null. if not, tries to write to file.
+	 */
+	public void writeToTextFile() {
+		if(dataTable == null) {
+			throw new NullPointerException("Data Table is null");
+		}
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream("data.txt");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+			objectOutputStream.writeObject(dataTable);
+			objectOutputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Wrote project data to data.txt");
+	}
+	
 	
 	/**
 	 * adds origin and destinations to table.
 	 * @param origin The starting location
 	 * @param destination The ending location
 	 */
-	public void add(String origin, String destination, float distance) {
-		dataTable.add(origin, destination, distance);
+	public void add(String origin, String destination) {
+		dataTable.add(origin, destination);
 	}
 	
 	/**
@@ -80,7 +141,7 @@ public class DataController {
 	public void addDistance(String origin, String destination, float distance) {
 		
 		if(!dataTable.contains(origin, destination)) {		
-			dataTable.add(origin, destination, distance);
+			dataTable.add(origin, destination);
 		}
 		
 		dataTable.getDataObject(origin, destination).setDistance(distance);	
@@ -94,12 +155,17 @@ public class DataController {
 	 */
 	public void addDirections(String origin, String destination, String[] directions) {
 		if(!dataTable.contains(origin, destination)) {		
-		//	dataTable.add(origin, destination);
+			dataTable.add(origin, destination);
 		}
 		
 		dataTable.getDataObject(origin, destination).setDirections(directions);	 	
 	}
 	
+	/**
+	 * prints data table
+	 */
+	public void printTable() {
+		dataTable.printTable();
+	}
 	
 }
-

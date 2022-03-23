@@ -23,16 +23,16 @@
 						"[(${n.getLng2()})]"]);
 	/*[/]*/
 	
-	<!-- Testing: view array contents
+	//Testing to see contents of searchArr
 	//outer
-	for(let o=0; o<searchArr.length;o++){
+	//for(let o=0; o<searchArr.length;o++){
 		//inner
-		let innerLength = searchArr[o].length;
-		for(let i=0; i<innerLength;i++){
+		//let innerLength = searchArr[o].length;
+		//for(let i=0; i<innerLength;i++){
 			//if(searchArr[i]=='386')
-			console.log("["+ o +"]["+ i +"]" + searchArr[o][i]);
-		}
-	} -->
+			//console.log("["+ o +"]["+ i +"]" + searchArr[o][i]);
+		//}
+	//}
 	
 <!--//creates map with desired traits and behaviors-->
 	function initMap(){
@@ -42,13 +42,7 @@
 			center: {lat: 40.7033 , lng: -77.5945 },
 			streetViewControl: false,		
 		});
-		<!--
-		// set temporary marker at SRU coordinates
-		//const marker = new google.maps.Marker({
-			//label: "SRU",
-			//position: tempCenter,
-			//map: map,
-		//});-->
+		
 		
 	<!--//when map is clicked on, calls marker function-->
 		map.addListener("click", (e) => {

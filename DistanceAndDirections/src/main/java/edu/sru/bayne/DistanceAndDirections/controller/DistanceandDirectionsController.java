@@ -111,6 +111,9 @@ public class DistanceandDirectionsController{
 	    	}
 	    }
 	    
+	    //these getters call the setters and set the cooridnates if null
+	    System.out.println(search.getOrigin() + " has coordinates " + search.getLat1() + ", " + search.getLng1());
+	    System.out.println(search.getDestination() + " has coordinates " + search.getLat2() + ", "  + search.getLng2());
 	/*
 		if(search.getqDistance()==null) {
 			search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));

@@ -6,6 +6,15 @@
 		height: 600px;
 		width: 100%;
 	}
+	
+	.scrollTable{
+		height: 150px;
+		overflow-y: scroll;
+	}
+	
+	.highlight{
+		background: #ddd;
+	}
 	</style>
 	
 	<script type="text/javascript" th:inline="javascript">
@@ -46,20 +55,34 @@
 		});
 		
 		let directionsService = new google.maps.DirectionsService();
-		//options for polyline, for adding directional arrows //Not working
+		//options for polyline, for adding directional arrows
 		var lineSymbol = {
 				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
 				strokeColor: 'black',
+				strokeWeight: 1.0,
+				strokeOpacity: 1.0,
+				fillOpacity: 1.0,
+				fillColor: 'black',
+				scale: 3,
 			};
+		var polyOptions = new google.maps.Polyline({
+			clickable: 'false',
+			strokeColor: '#66F9EF',
+			strokeOpacity: .75,
+			strokeWeight: 10,
+			icons: [{
+				icon: lineSymbol,
+				offset: '30px',
+				repeat: '50px',
+			}],
+		})
 		
 		let directionsRenderer = new google.maps.DirectionsRenderer({
 			draggable: true, 
-			polyLineOptions: {
-				icons: [{
-					icon: lineSymbol,
-					offset: '30px',
-					repeat: '50px',
-				}]
+			polylineOptions: polyOptions,
+			markerOptions: {
+				draggable: true,
+			    clickable: true,
 			}
 		});
 		directionsRenderer.setMap(map);
@@ -81,7 +104,9 @@
 		buttonArray.forEach(element => {
 			let tempId = element.id;
 			element.addEventListener('click', (e) =>{
+				
 				console.log('works at ' + element.id);
+				
 			});
 			google.maps.event.addDomListener(document.getElementById(tempId), 'click', () =>{
 			<!-- need to get my lat/long from db provided I have Id -->
@@ -176,6 +201,8 @@
 			
 			let pos1 = markers[0].getPosition();
 			let pos2 = markers[1].getPosition();
+			//remove once custom polyline replaces renderer
+			deleteMarkers();
 			
 			directionsService
 		    .route({
@@ -232,6 +259,8 @@
 	function stopHighlight(marker){
 		marker.setAnimation(null);
 	}
+	
+	
 	<!------------------------------------------------------------------->
 	
 <!-- //Object using data from database to display within info windows
@@ -267,9 +296,9 @@
 		<form action="/newsearch">
 			<button type="submit">New Query</button>
 		</form>
-		
 		<h2>Queries</h2>
-            <table id="display" border=".5" bordercolor="#A9A9A9">
+		<div class="scrollTable">
+            <table width="100%" id="display" border=".5" bordercolor="#A9A9A9" >
                 <thead>
                 	<!-- Headings for query table -->
                     <tr>
@@ -284,7 +313,7 @@
                 </thead>
                 <tbody>
                 <!-- Shows data for each entity found in database -->
-                <tr th:each="search : ${dist}">
+                <tr th:classname="'table' + ${search.getId()}" th:each="search : ${dist}">
                 	<td th:text="${search.getId()}"></td>
                     <td th:text="${search.getOrigin()}"></td>
                     <td th:text="${search.getDestination()}"></td>
@@ -295,6 +324,7 @@
                 </tr>
             	</tbody>
        		</table>
+       		</div>
         </div>
 </div>
 		<div>

@@ -17,6 +17,11 @@ public class DatabaseQuery {
 	static final String UserName = "sa"; 
 	static final String Password = ""; 
 	
+	/**
+	 * Query Latitude and longitude from both origin and destination of a db object with a provided ID.
+	 * @param Id of database entry
+	 * @return
+	 */
 	public String queryCoordFromID(String Id) {
 		
 		Connection connection = null;

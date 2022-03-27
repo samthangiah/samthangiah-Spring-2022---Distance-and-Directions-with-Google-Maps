@@ -8,7 +8,7 @@ import java.util.Hashtable;
 //Included Functions: size(), addToTable(), containsKey(), contains(), removeFromTable(), getFromTable(), getTable()
 
 //TODO: test for hashtable stackoverflow handling
-public class Table {
+public class Table implements java.io.Serializable{
 	
 	
 	private Hashtable<Integer, DataObject> table;

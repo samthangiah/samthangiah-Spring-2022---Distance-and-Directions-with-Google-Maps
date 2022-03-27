@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+
+
 public class DataController {
 	
-	private String inputFileName = "Addresses.xlsx";
 	private XSSFParser parser;
 	private Table dataTable;
 	
@@ -21,7 +22,7 @@ public class DataController {
 	 * creates instance of text file to be used
 	 */
 	public DataController() { 		
-		File dataFile = new File("data.txt");
+		File dataFile = new File("./data/data.txt");
 		try {
 			System.out.println(dataFile.createNewFile());
 		} catch (IOException e) {
@@ -49,7 +50,7 @@ public class DataController {
 	 */
 	public void readFromTextFile() {
 		try {
-			FileInputStream fileInputStream = new FileInputStream("data.txt");
+			FileInputStream fileInputStream = new FileInputStream("./data/data.txt");
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 			if(dataTable == null) {
 				dataTable = (Table) objectInputStream.readObject();
@@ -78,7 +79,7 @@ public class DataController {
 			throw new NullPointerException("Data Table is null");
 		}
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream("data.txt");
+			FileOutputStream fileOutputStream = new FileOutputStream("./data/data.txt");
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 			objectOutputStream.writeObject(dataTable);
 			objectOutputStream.close();
@@ -132,13 +133,17 @@ public class DataController {
 		return null;
 	}
 	
+	public String getOrigin(String origin, String destination) {
+		return origin;
+	}
+	
 	/**
 	 * add distance based on location pair
 	 * @param origin The starting location
 	 * @param destination The ending location
 	 * @param distance distance between locations
 	 */
-	public void addDistance(String origin, String destination, float distance) {
+	public void setDistance(String origin, String destination, float distance) {
 		
 		if(!dataTable.contains(origin, destination)) {		
 			dataTable.add(origin, destination);
@@ -153,7 +158,7 @@ public class DataController {
 	 * @param destination The ending location
 	 * @param directions distance between locations
 	 */
-	public void addDirections(String origin, String destination, String[] directions) {
+	public void setDirections(String origin, String destination, String[] directions) {
 		if(!dataTable.contains(origin, destination)) {		
 			dataTable.add(origin, destination);
 		}
@@ -161,11 +166,19 @@ public class DataController {
 		dataTable.getDataObject(origin, destination).setDirections(directions);	 	
 	}
 	
+	public void setOrigin(String origin, String destination, float distance) {
+		if(!dataTable.contains(origin, destination)) {	
+			dataTable.add(origin, destination);
+		}
+	}
+	
+	
 	/**
 	 * prints data table
 	 */
-	public void printTable() {
+	/*public void printTable() {
 		dataTable.printTable();
 	}
+	*/
 	
-}
+	}

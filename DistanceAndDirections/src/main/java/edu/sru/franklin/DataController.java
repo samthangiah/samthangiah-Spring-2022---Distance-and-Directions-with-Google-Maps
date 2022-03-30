@@ -176,9 +176,17 @@ public class DataController {
 	/**
 	 * prints data table
 	 */
-	/*public void printTable() {
-		dataTable.printTable();
+	public void printTable() {
+		
+			dataTable.printTable();
+		
 	}
-	*/
+	
+	public void printTableHeader(int length) {
+		
+			dataTable.printTableHeader(length);
+		
+	}
+	
 	
 	}

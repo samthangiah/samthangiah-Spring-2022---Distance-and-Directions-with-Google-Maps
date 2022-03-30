@@ -1,5 +1,6 @@
-package edu.sru.franklin;
+package edu.sru.franklin; 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public  class XSSFParser {
 
+	
+	/*
+	 * This class uses a 3rd party library called Apache POI, which provides several methods and data structures used to manipulate .xlsx files
+	 */
+	
+	//XSSFWorkbook is a data structure used to store a .xlsx file's data in code
 	private XSSFWorkbook wb;
 	private Table dataTable;
 	private String[] locations;
@@ -23,9 +30,8 @@ public  class XSSFParser {
 	 * @param fileName the path of the xlsx file of location pairs to be read into the program
 	 */
 	public void parseFromFile(String fileName) {
-
 		//Try to create inputstream to file. will fail if filepath is bad
-		try(InputStream fileIn = this.getClass().getResourceAsStream(fileName)){
+		try(InputStream fileIn = new FileInputStream("./data/Addresses.xlsx")){
 			//workbook is a object to hold the xlsx data. has many utility methods that could be used in the future
 			wb = new XSSFWorkbook(fileIn);
 			

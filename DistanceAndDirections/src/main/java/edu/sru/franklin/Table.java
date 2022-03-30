@@ -15,7 +15,7 @@ public class Table {
 	
 	/**
 	 * Constructor for Table
-	 * @param size the size the inner hash table should be initialized to
+	 * 
 	 */
 	public Table() //Creates table that holds a string pair and a float value
 	{

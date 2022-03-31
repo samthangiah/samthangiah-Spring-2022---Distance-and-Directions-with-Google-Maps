@@ -16,6 +16,9 @@ import javax.xml.parsers.*;
 //import org.xml.sax.SAXException;
 import org.w3c.dom.*;
 
+import edu.sru.booser.GoogleAPIRoadsData.Keys.KEYS;
+import edu.sru.booser.Logging.Log;
+
 import java.io.*;
 
 
@@ -29,11 +32,6 @@ import java.io.*;
  */
 public class API_DistanceMatrix {
 	
-	/**
-	 * Current Working Distance Matrix API KEY
-	 */
-	final static String apiKey = "&key=AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s";
-
 	/**
 	 * Google Maps API URL base
 	 */
@@ -73,11 +71,12 @@ public class API_DistanceMatrix {
 			//set the origin and destination
 			_fromAddress = "origins="+orig;
 			_toAddress = "&destinations="+dest;
-			final String _outRequest = _gapiUrlPart
-					+ _fromAddress
-					+ _toAddress
-					+ "&mode=driving&units=imperial"
-					+ apiKey;
+			String _outRequest;
+				_outRequest = _gapiUrlPart
+						+ _fromAddress
+						+ _toAddress
+						+ "&mode=driving&units=imperial"
+						+ "&key="+ KEYS.getKeyDist();
 			//System.out.println(_outRequest);
 			URL urlRequest = new URL(_outRequest);
 	//System.out.println(urlRequest+"\n");
@@ -97,6 +96,9 @@ public class API_DistanceMatrix {
 		}
 		catch (IOException e)
 		{
+			Log.logError("API call to Google Distance Matrix API Failed"
+					+ "\nAPI Key USED = " + KEYS.getKeyDist() + "\n"
+					+ e.toString());
 			throw e; // Propagate the exception
 		}
 		finally
@@ -109,7 +111,7 @@ public class API_DistanceMatrix {
 
 	
 
-	public static float parseDistance(String xmlString)
+	public static float parseDistance(String xmlString) throws IOException
 	{
 		float distance=0;
 		String strMileage;
@@ -135,7 +137,12 @@ public class API_DistanceMatrix {
 		}
 		catch (Exception e)
 		{
-			
+			Log.logError("API_DistanceMatrix.parseDistance() Failure"
+					+ "XML Being Parsed:\n" 
+					+ xmlString
+					+ "\n"
+					+ e.toString());
+	
 		}
 
 		return distance;

@@ -6,6 +6,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.json.JSONObject;
+
+import edu.sru.booser.GoogleAPIRoadsData.Keys.KEYS;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -18,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
  *
  */
 public class API_GeoCode {
-	final String key = "AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg";
 	private String baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?new_forward_geocoder=true";
 	private String address = "";
 	private String lng = "";
@@ -53,7 +55,7 @@ public class API_GeoCode {
 		url += "&address=";
 		url += getAddress().replaceAll(" ", "+");
 		url += "&key=";
-		url += getKey();
+		url += KEYS.getKeyGeo();
 		
 		return url;
 	}
@@ -63,7 +65,7 @@ public class API_GeoCode {
         String url = getBaseUrl() + "&latlng=";
         lat = latIn;
         lng = lngIn;
-        url += lat + "," + lng + "&key=" + getKey();
+        url += lat + "," + lng + "&key=" + KEYS.getKeyGeo();
         return url;
 
     }
@@ -136,11 +138,6 @@ public class API_GeoCode {
 	public void setBaseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
-
-	public String getKey() {
-		return key;
-	}
-	
 
 	public String getLng() {
 		return lng;

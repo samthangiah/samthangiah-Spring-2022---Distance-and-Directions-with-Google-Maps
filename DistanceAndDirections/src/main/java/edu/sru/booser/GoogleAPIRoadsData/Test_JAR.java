@@ -8,8 +8,8 @@ public class Test_JAR
 	public static void main(String args[]) throws IOException, InterruptedException
 	{
 		//Common Variables
-		String LocS = "322+N+McKean+St+Butler+PA"; //Starting Location
-		String LocE = "1+Morrow+Way+SlipperyRock+PA"; //Ending Location
+		String LocS = "322 N McKean St Butler PA"; //Starting Location
+		String LocE = "1 Morrow Way SlipperyRock PA"; //Ending Location
 		
 		
 		
@@ -91,7 +91,7 @@ public class Test_JAR
 			API_GeoCode Ea = new API_GeoCode(LocS);
 			Ea.fetchCoordinatesFromAddress(Ea.buildFromAddress(LocS));
 			String OriE =  Ea.getLat() + "," + Ea.getLng();
-			System.out.println("A1 = " + OriC);
+			System.out.println("Ea = " + OriC);
 		
 			//Get Coordinates from Address LocE
 			API_GeoCode Eb = new API_GeoCode(LocE);

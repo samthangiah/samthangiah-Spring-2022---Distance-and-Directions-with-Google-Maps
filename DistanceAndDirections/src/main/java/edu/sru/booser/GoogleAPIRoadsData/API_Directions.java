@@ -26,6 +26,9 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+import edu.sru.booser.GoogleAPIRoadsData.Keys.KEYS;
+import edu.sru.booser.Logging.Log;
+
 
 
 /**
@@ -42,7 +45,7 @@ public class API_Directions {
 	/**
 	 * The key used to access the Directions @api
 	 */
-	final static String apiKey = "&key=AIzaSyAStw6XHaUsvg_-LMDrOPGRl0ubLZi9aZ4";
+	final static String apiKey = "AIzaSyAStw6XHaUsvg_-LMDrOPGRl0ubLZi9aZ4";
 	
 	static final String CoreAPI = "https://maps.googleapis.com/maps/api/directions/xml?";
 	static final String Origin = "origin=";
@@ -77,7 +80,7 @@ public class API_Directions {
 				(Destination + newDestination) +
 				Mode +
 				Measurement +
-				apiKey
+				"&key=" + KEYS.getKeyDir()
 				);
 		_httpConnection = 
 				(HttpURLConnection) directionsCallAPI.openConnection();
@@ -98,7 +101,12 @@ public class API_Directions {
 	}
 	catch (IOException e)
 	{
+		Log.logError("API call to Google Directions API Failed"
+				+ "\nAPI Key USED = "
+				+ KEYS.getKeyDir() + "\n"
+				+ e.toString());
 		throw e; // Propagate the exception
+		//Log.logError(e.toString());
 	}
 	finally
 	{
@@ -120,8 +128,9 @@ public class API_Directions {
 	 * 
 	 * @param xmlIn an XML response from the Google Distance API
 	 * @param holder the object that will store the directions summary
+	 * @throws IOException 
 	 */
-	public static void parseSUMMARY(String xmlIn, DirectionsHolder holder) {
+	public static void parseSUMMARY(String xmlIn, DirectionsHolder holder) throws IOException {
 		try
 		{
 			DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
@@ -139,7 +148,14 @@ public class API_Directions {
 		}
 		catch (Exception e)
 		{
-			System.out.println("Occurred at 2");
+			Log.logError("API_Directions.parseSUMMARY Failure"
+					+ "\nAPI Key USED = "
+					+ KEYS.getKeyDir()
+					+ "\nString to be parsed:\n\t"
+					+ xmlIn
+					+ "\nDirections Summary Used:\n"
+					+ holder.getSummary()
+					+ e.toString());
 			try 
 			{
 				Thread.sleep(5000);
@@ -160,7 +176,7 @@ public class API_Directions {
 	 * @param xmlIn an XML response from the Google Distance API
 	 * @param holder the object that will store the directions in a vector
 	 */
-	public static void parseINSTRUCTIONS(String xmlIn, DirectionsHolder holder) {
+	public static void parseINSTRUCTIONS(String xmlIn, DirectionsHolder holder) throws IOException {
 		try
 		{
 			DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
@@ -184,7 +200,14 @@ public class API_Directions {
 		}
 		catch (Exception e)
 		{
-			System.out.println("Occurred at 2");
+			Log.logError("API_Directions.parseINSTRUCTIONS Failure"
+					+ "\nAPI Key USED = "
+					+ KEYS.getKeyDir()
+					+ "\nString to be parsed:\n\t"
+					+ xmlIn
+					+ "\nDirections Holder Used:\n"
+					+ holder.toString()
+					+ e.toString());
 			try 
 			{
 				Thread.sleep(5000);

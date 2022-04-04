@@ -48,6 +48,26 @@ public class DataController {
 			FileInputStream fileInputStream = new FileInputStream("./data/data.txt");
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 			dataTable = (Table) objectInputStream.readObject();
+<<<<<<< HEAD
+			objectInputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void readFromTextFile(String path) {
+		try {
+			FileInputStream fileInputStream = new FileInputStream(path);
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			dataTable = (Table) objectInputStream.readObject();
+=======
+>>>>>>> master
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -81,6 +101,24 @@ public class DataController {
 			e.printStackTrace();
 		}
 		System.out.println("Wrote project data to data.txt");
+	}
+	public void writeToTextFile(String path) {
+		if(dataTable == null) {
+			throw new NullPointerException("Data Table is null");
+		}
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(path);
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+			objectOutputStream.writeObject(dataTable);
+			objectOutputStream.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Wrote project data to: " + path);
 	}
 	
 	
@@ -162,17 +200,29 @@ public class DataController {
 		}
 	}
 	
+	public Table getTable() {
+		return dataTable;
+	}
 	
 	/**
 	 * prints data table
 	 */
 	public void printTable() {
 			dataTable.printTable();
+<<<<<<< HEAD
 	}
 	
 	public void printTableHeader(int length) {		
 			dataTable.printTableHeader(length);	
 	}
 	
+=======
+	}
+	
+	public void printTableHeader(int length) {		
+			dataTable.printTableHeader(length);	
+	}
+	
+>>>>>>> master
 	
 	}

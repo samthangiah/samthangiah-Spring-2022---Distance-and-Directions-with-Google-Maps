@@ -1,6 +1,8 @@
 package edu.sru.bayne.DistanceAndDirections.controller;
 
 import java.io.IOException;
+import java.util.Enumeration;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import edu.sru.bayne.DistanceAndDirections.domain.Search;
 import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
 import edu.sru.booser.datastore.*;
+import edu.sru.franklin.DataController;
+import edu.sru.franklin.DataObject;
 import edu.sru.franklin.Table;
 
 
@@ -27,11 +31,14 @@ import edu.sru.franklin.Table;
 public class DistanceandDirectionsController{
 	
 	private SearchRepository searchRepo;
-	private Table distanceTable = new Table();
+	private DataController dataController = new DataController();
+	private Table distanceTable;
 	
 	
 	public DistanceandDirectionsController(SearchRepository searchRepo) {
 		this.searchRepo = searchRepo;
+		dataController.readFromTextFile();
+		distanceTable = dataController.getTable();
 	}
 	
 	
@@ -99,7 +106,8 @@ public class DistanceandDirectionsController{
 		
 	    //hash table is checked here before calling API
 	    if (search.getqDistance() >= 0.0) {
-	    	if(distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) {
+	    	if((distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) && distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() != 0) {
+	    		
 	    		search.setqDistance(distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
 	    		System.out.println("got distance " + distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() + " from HASHTABLE");
 	    	}
@@ -107,7 +115,9 @@ public class DistanceandDirectionsController{
 	    		search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
 				System.out.println("Distance called API to set to: " + search.getqDistance());
 				distanceTable.add(search.getOrigin(), search.getDestination());
+				distanceTable.getDataObject(search.getOrigin(), search.getDestination()).setDistance(search.getqDistance());
 				distanceTable.add(search.getDestination(), search.getOrigin());
+				distanceTable.getDataObject(search.getDestination(), search.getOrigin()).setDistance(search.getqDistance());
 	    	}
 	    }
 	    
@@ -121,7 +131,7 @@ public class DistanceandDirectionsController{
 		}*/
 	    System.out.println("Distance = " + search.getqDistance());
 	    searchRepo.save(search);
-	    
+	    dataController.writeToTextFile();
 	    
 	    return "redirect:/distance-matrix";
 	}

@@ -87,6 +87,10 @@ public class Table implements java.io.Serializable{
 		}
 	
 	}
+	public Hashtable<Integer,DataObject> getTable() {
+		return table;
+	}
+
 	
 	
 }

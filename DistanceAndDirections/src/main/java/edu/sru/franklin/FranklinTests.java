@@ -12,7 +12,7 @@ public class FranklinTests {
 		controller.readFromExcelDoc(filepath);
 		
 		//test print
-		controller.printTable();
+		controller.printTableHeader(1);
 		
 		controller.writeToTextFile();
 		
@@ -22,8 +22,7 @@ public class FranklinTests {
 		//reading from the text file should only work if the write actually works
 		controller.readFromTextFile();
 		
-		//test print
-		controller.printTable();
+		controller.printTableHeader(1);
 	}
 
 }

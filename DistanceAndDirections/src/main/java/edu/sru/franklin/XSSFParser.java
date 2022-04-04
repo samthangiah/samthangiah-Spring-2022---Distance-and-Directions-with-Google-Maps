@@ -31,7 +31,7 @@ public  class XSSFParser {
 	 */
 	public void parseFromFile(String fileName) {
 		//Try to create inputstream to file. will fail if filepath is bad
-		try(InputStream fileIn = new FileInputStream("./data/Addresses.xlsx")){
+		try(InputStream fileIn = new FileInputStream(fileName)){
 			//workbook is a object to hold the xlsx data. has many utility methods that could be used in the future
 			wb = new XSSFWorkbook(fileIn);
 			
@@ -78,7 +78,7 @@ public  class XSSFParser {
 		for(int i = 0; i < locations.length; i++) {
 			temp = locations[i].split("\\t");
 			if(!dataTable.contains(temp[0], temp[1])) {
-			//	dataTable.add(temp[0], temp[1]);
+				dataTable.add(temp[0], temp[1]);
 			}
 			
 		}

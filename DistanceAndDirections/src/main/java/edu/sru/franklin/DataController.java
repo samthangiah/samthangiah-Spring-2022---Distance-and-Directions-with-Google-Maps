@@ -206,12 +206,10 @@ public class DataController {
 	 */
 	public void printTable() {
 			dataTable.printTable();
-
 	}
 	
 	public void printTableHeader(int length) {		
 			dataTable.printTableHeader(length);	
 	}
-
 	
 	}

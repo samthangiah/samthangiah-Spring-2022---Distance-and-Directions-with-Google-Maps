@@ -6,6 +6,15 @@
 		height: 600px;
 		width: 100%;
 	}
+	
+	.scrollTable{
+		height: 150px;
+		overflow-y: scroll;
+	}
+	
+	.highlight{
+		background: #ddd;
+	}
 	</style>
 	
 	<script type="text/javascript" th:inline="javascript">
@@ -36,11 +45,49 @@
 	
 <!--//creates map with desired traits and behaviors-->
 	function initMap(){
+		//for route
+		
 	<!--//const tempCenter = {lat: 41.0630 , lng: -80.0412 }-->
-			map = new google.maps.Map(document.getElementById("map"), {
+		map = new google.maps.Map(document.getElementById("map"), {
 			zoom: 7,
 			center: {lat: 40.7033 , lng: -77.5945 },
 			streetViewControl: false,		
+		});
+		
+		let directionsService = new google.maps.DirectionsService();
+		//options for polyline, for adding directional arrows
+		var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeColor: 'black',
+				strokeWeight: 1.0,
+				strokeOpacity: 1.0,
+				fillOpacity: 1.0,
+				fillColor: 'black',
+				scale: 3,
+			};
+		var polyOptions = new google.maps.Polyline({
+			clickable: 'false',
+			strokeColor: '#66F9EF',
+			strokeOpacity: .75,
+			strokeWeight: 10,
+			icons: [{
+				icon: lineSymbol,
+				offset: '30px',
+				repeat: '50px',
+			}],
+		})
+		
+		let directionsRenderer = new google.maps.DirectionsRenderer({
+			draggable: true, 
+			polylineOptions: polyOptions,
+			markerOptions: {
+				draggable: true,
+			    clickable: true,
+			}
+		});
+		directionsRenderer.setMap(map);
+		directionsRenderer.addListener("directions_changed", () => {
+			const directions = directionsRenderer.getDirections();
 		});
 		
 		
@@ -57,7 +104,9 @@
 		buttonArray.forEach(element => {
 			let tempId = element.id;
 			element.addEventListener('click', (e) =>{
+				
 				console.log('works at ' + element.id);
+				
 			});
 			google.maps.event.addDomListener(document.getElementById(tempId), 'click', () =>{
 			<!-- need to get my lat/long from db provided I have Id -->
@@ -65,6 +114,7 @@
 					//console.log("Index is still: " + searchIndex);
 					newPair(searchIndex);
 					//newPair(40.7220003, -80.1291846, 40.8641043, -79.8938038);
+					makeRoute(directionsService, directionsRenderer);
 				});
 			
 		});
@@ -108,7 +158,7 @@
 		
 		function setIndexById(tId){
 			let realId = String(tId.replaceAll("mark", ""));
-			console.log("tId: " + tId + typeof(tId) + ", realId: " + realId + typeof(realID));
+			//console.log("tId: " + tId + typeof(tId) + ", realId: " + realId + typeof(realID));
 			//[object][0=Id, 1=Lat1, 2=Lng1, 3=Lat2, 4=Lng2]
 			// this checks the id of each obj in array, compares the id, 
 			// then sets index in previous scope to the match
@@ -142,6 +192,28 @@
 			
 			changeCenter();
 			
+		}
+		
+		function makeRoute(directionsService, directionsRenderer){
+
+			//console.log("Address 1: " + markers[0].getPosition());
+			//console.log("Address 2: " + markers[1].getPosition());
+			
+			let pos1 = markers[0].getPosition();
+			let pos2 = markers[1].getPosition();
+			//remove once custom polyline replaces renderer
+			deleteMarkers();
+			
+			directionsService
+		    .route({
+		      origin: pos1,
+		      destination: pos2,
+		      travelMode: 'DRIVING',
+		    })
+		    .then((response) => {
+		      directionsRenderer.setDirections(response);
+		    })
+		    .catch((e) => window.alert("Directions request failed due to " + status));
 		}
 		
 		function deleteMarkers(){
@@ -187,6 +259,8 @@
 	function stopHighlight(marker){
 		marker.setAnimation(null);
 	}
+	
+	
 	<!------------------------------------------------------------------->
 	
 <!-- //Object using data from database to display within info windows
@@ -222,9 +296,9 @@
 		<form action="/newsearch">
 			<button type="submit">New Query</button>
 		</form>
-		
 		<h2>Queries</h2>
-            <table id="display" border=".5" bordercolor="#A9A9A9">
+		<div class="scrollTable">
+            <table width="100%" id="display" border=".5" bordercolor="#A9A9A9" >
                 <thead>
                 	<!-- Headings for query table -->
                     <tr>
@@ -239,7 +313,7 @@
                 </thead>
                 <tbody>
                 <!-- Shows data for each entity found in database -->
-                <tr th:each="search : ${dist}">
+                <tr th:classname="'table' + ${search.getId()}" th:each="search : ${dist}">
                 	<td th:text="${search.getId()}"></td>
                     <td th:text="${search.getOrigin()}"></td>
                     <td th:text="${search.getDestination()}"></td>
@@ -250,6 +324,7 @@
                 </tr>
             	</tbody>
        		</table>
+       		</div>
         </div>
 </div>
 		<div>

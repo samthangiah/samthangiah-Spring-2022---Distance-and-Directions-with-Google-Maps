@@ -48,6 +48,7 @@ public class DataController {
 			FileInputStream fileInputStream = new FileInputStream("./data/data.txt");
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 			dataTable = (Table) objectInputStream.readObject();
+<<<<<<< HEAD
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -65,6 +66,8 @@ public class DataController {
 			FileInputStream fileInputStream = new FileInputStream(path);
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 			dataTable = (Table) objectInputStream.readObject();
+=======
+>>>>>>> master
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -206,11 +209,20 @@ public class DataController {
 	 */
 	public void printTable() {
 			dataTable.printTable();
+<<<<<<< HEAD
 	}
 	
 	public void printTableHeader(int length) {		
 			dataTable.printTableHeader(length);	
 	}
 	
+=======
+	}
+	
+	public void printTableHeader(int length) {		
+			dataTable.printTableHeader(length);	
+	}
+	
+>>>>>>> master
 	
 	}

@@ -15,6 +15,7 @@ public class Table implements java.io.Serializable{
 	
 	/**
 	 * Constructor for Table
+	 * 
 	 */
 	public Table() //Creates table that holds a string pair and a float value
 	{

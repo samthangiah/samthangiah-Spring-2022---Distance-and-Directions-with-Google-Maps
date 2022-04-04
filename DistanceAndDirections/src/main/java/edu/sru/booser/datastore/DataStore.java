@@ -7,6 +7,8 @@ import java.util.Vector;
  * Stores the starting and ending locations
  * as well as the distance and directionsHolder.
  * 
+ * @author Michael Booser
+ * 
  */
 public class DataStore {
 

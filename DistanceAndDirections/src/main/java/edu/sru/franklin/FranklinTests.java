@@ -14,13 +14,13 @@ public class FranklinTests {
 		//test print
 		controller.printTableHeader(1);
 		
-		controller.writeToTextFile();
+		controller.writeToTextFile("./data/testData.txt");
 		
 		//creating a new controller creates a blank hashtable, should be empty
 		controller = new DataController();
 		
 		//reading from the text file should only work if the write actually works
-		controller.readFromTextFile();
+		controller.readFromTextFile("./data/testData.txt");
 		
 		controller.printTableHeader(1);
 	}

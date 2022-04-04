@@ -42,6 +42,7 @@ public class Table implements java.io.Serializable{
 		float distance = 0;
 		table.put(temp.hashCode(), new DataObject(origin, destination, distance));
 	}
+	
 	/**
 	 * 
 	 * @param origin starting location

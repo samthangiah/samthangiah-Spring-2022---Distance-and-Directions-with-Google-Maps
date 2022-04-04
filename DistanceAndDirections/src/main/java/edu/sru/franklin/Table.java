@@ -72,7 +72,26 @@ public class Table implements java.io.Serializable{
 					" Distance: " + temp.getDistance() +
 					" Directions: " + temp.getDirections() + "\n");
 		}
+	
 	}
+	public void printTableHeader(int length) {
+		Enumeration<DataObject> e = table.elements();
+		int j = 0;
+		DataObject temp;
+		while(j < length && e.hasMoreElements()) {
+			temp = e.nextElement();
+			System.out.println("Origin: " + temp.getOrigin() + 
+					" Destination: " + temp.getDestination() +
+					" Distance: " + temp.getDistance() +
+					" Directions: " + temp.getDirections() + "\n");
+			j++;
+		}
+	
+	}
+	public Hashtable<Integer,DataObject> getTable() {
+		return table;
+	}
+
 	
 	
 }

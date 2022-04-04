@@ -24,7 +24,7 @@ public class DataController {
 	public DataController() { 		
 		File dataFile = new File("./data/data.txt");
 		try {
-			System.out.println(dataFile.createNewFile());
+			dataFile.createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,12 +37,7 @@ public class DataController {
 	public void readFromExcelDoc(String fileName) {
 		parser = new XSSFParser();
 		parser.parseFromFile(fileName);
-		if(dataTable == null) {
-			dataTable = parser.newDataTableFromFile();
-		}
-		else {
-			//add code if the table already exists, should we merge?
-		}
+		dataTable = parser.newDataTableFromFile();
 	}
 	
 	/**
@@ -52,12 +47,7 @@ public class DataController {
 		try {
 			FileInputStream fileInputStream = new FileInputStream("./data/data.txt");
 			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-			if(dataTable == null) {
-				dataTable = (Table) objectInputStream.readObject();
-			}
-			else {
-				
-			}
+			dataTable = (Table) objectInputStream.readObject();
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -176,9 +166,13 @@ public class DataController {
 	/**
 	 * prints data table
 	 */
-	/*public void printTable() {
-		dataTable.printTable();
+	public void printTable() {
+			dataTable.printTable();
 	}
-	*/
+	
+	public void printTableHeader(int length) {		
+			dataTable.printTableHeader(length);	
+	}
+	
 	
 	}

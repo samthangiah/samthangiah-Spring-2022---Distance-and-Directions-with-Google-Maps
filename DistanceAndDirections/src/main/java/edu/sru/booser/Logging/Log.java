@@ -33,7 +33,7 @@ public class Log {
 		BufferedWriter bw = new BufferedWriter(logFile);
 		String eTime = TimeStamp();
 	
-		String OUTSTRING = "-- New Event --\t" + eTime + "\n\n" +  Input + "\n\n-- End Event --\t" + eTime;
+		String OUTSTRING = "\n-- New Event --\t" + eTime + "\n\n" +  Input + "\n\n-- End Event --\t" + eTime + "\n";
 		//System.out.println(OUTSTRING);
 		bw.write(OUTSTRING);
 		bw.close();
@@ -50,9 +50,9 @@ public class Log {
 		BufferedWriter bw = new BufferedWriter(logFile);
 		String eTime = TimeStamp();
 		
-		String OUTSTRING = "-- New Event --\t" + eTime + "\n\n" +  Input + "\n\n-- End Event --\t" + eTime;
+		String OUTSTRINGB = "\n-- New ERROR --\t" + eTime + "\n\n" +  Input + "\n\n-- End ERROR --\t" + eTime + "\n";
 		//System.out.println(OUTSTRING);
-		bw.write(OUTSTRING);
+		bw.write(OUTSTRINGB);
 		bw.close();
 	}
 	

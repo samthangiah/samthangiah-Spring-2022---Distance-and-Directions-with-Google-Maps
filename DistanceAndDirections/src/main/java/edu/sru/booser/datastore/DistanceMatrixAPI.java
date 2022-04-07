@@ -62,6 +62,7 @@ public class DistanceMatrixAPI {
 	 */
 	public static float getDistance(String orig, String dest) throws IOException
 	{
+		System.out.println("DISTANCE HAS BEEN CALLED");
 		orig = orig.replaceAll(" ", "%20");
 		dest = dest.replaceAll(" ", "%20");
 		

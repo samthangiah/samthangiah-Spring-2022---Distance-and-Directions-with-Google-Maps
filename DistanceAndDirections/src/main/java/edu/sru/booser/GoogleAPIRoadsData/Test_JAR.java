@@ -2,6 +2,9 @@ package edu.sru.booser.GoogleAPIRoadsData;
 
 import java.io.IOException;
 
+import edu.sru.booser.GoogleAPIRoadsData.Keys.KEYS;
+import edu.sru.booser.GoogleAPIRoadsData.Log.LogUtil;
+
 public class Test_JAR 
 {
 	
@@ -11,7 +14,13 @@ public class Test_JAR
 		String LocS = "322 N McKean St Butler PA"; //Starting Location
 		String LocE = "1 Morrow Way SlipperyRock PA"; //Ending Location
 		
-		
+		//set API Keys
+		LogUtil.CLEARLog();
+		KEYS.setFileKeyDist("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleDistanceKey.txt");
+		KEYS.setFileKeyDir("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleDirectionsKey.txt");
+		KEYS.setFileKeyGeo("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleGeoCodeKey.txt");
+		LogUtil.PRINTLog();
+		System.out.println(KEYS.getKeyDist());
 		
 		//Requires Input Formatting
 		//Objective A: Distance between two points (Lat/Lng)
@@ -65,6 +74,11 @@ public class Test_JAR
 		System.out.println("Ending: Address to Coordinates\n*****************************************");
 		
 		System.out.println("*****************************************\nStarting: Coordinates to Address");
+			//Get Address from Coordinates
+			API_GeoCode C3 = new API_GeoCode();
+			C3.fetchAddressFromCoordinates(C3.buildFromCoordinates("40.8641043", "-79.8938038"));
+			System.out.println("Cooridantes become the Address: " + C3.getAddress());
+			
 		System.out.println("Ending: Coordinates to Address\n*****************************************");
 		
 		

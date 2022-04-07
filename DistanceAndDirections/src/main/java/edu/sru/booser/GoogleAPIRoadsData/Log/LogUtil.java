@@ -18,7 +18,7 @@ import java.util.Scanner;
  * @author Michael Booser
  *
  */
-public class Log {
+public class LogUtil {
 	
 	//Name of LOG File
 	private static final String FILE = "Log.txt";
@@ -96,7 +96,7 @@ public class Log {
 		
 		System.out.print("Clearing Log... ");
 		Writer.nullWriter();
-		Log.PRINTLog();
+		LogUtil.PRINTLog();
 		System.out.println(" ...Cleared!");
 		writer.close();
 	}

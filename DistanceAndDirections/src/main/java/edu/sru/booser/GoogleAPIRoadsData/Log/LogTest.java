@@ -9,11 +9,11 @@ public class LogTest {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-	KEYS.setKeyDist("k.txt");
+	KEYS.setFileKeyDist("k.txt");
 	API_DistanceMatrix.getDistance("Butler PA", "Slippery Rock PA");
-	Log.logError("ERROR MESSAGE");
-	Log.PRINTLog();
-	Log.CLEARLog();
+	LogUtil.logError("ERROR MESSAGE");
+	LogUtil.PRINTLog();
+	LogUtil.CLEARLog();
 		
 	}
 

@@ -14,23 +14,23 @@ public class DataStore {
 	/**
 	 * The start location in any format.
 	 */
-	private String inputStart;
+	private String startOrigin;
 		public String getInputStart() {
-			return inputStart;
+			return startOrigin;
 		}
 		public void setInputStart(String newInputStart) {
-			this.inputStart = newInputStart;
+			this.startOrigin = newInputStart;
 		}
 	
 	/**
 	 * The end location in any format.
 	 */
-	private String inputEnd;
+	private String endDestination;
 		public String getInputEnd() {
-			return inputEnd;
+			return endDestination;
 		}
 		public void setInputEnd(String newInputEnd) {
-			this.inputEnd = newInputEnd;
+			this.endDestination = newInputEnd;
 		}
 	
 	/**
@@ -114,5 +114,10 @@ public class DataStore {
 		this.setDistMiles(value);
 		return value;	
 	}
+	
+	public void calcDirections() throws IOException {
+		API_Directions.getDirections(this.getInputStart(), this.getInputEnd(), this.getHolder());
+	}
+	
 	
 }

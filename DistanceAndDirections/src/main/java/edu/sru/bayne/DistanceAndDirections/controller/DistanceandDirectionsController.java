@@ -69,6 +69,17 @@ public class DistanceandDirectionsController{
 	}
 	
 	/**
+	 * Mapping for the second page for csv uploads, polygons, and routing.
+	 * @param model is the 'Search' entity used by the repository
+	 * @return
+	 */
+	@RequestMapping({"/polyrouting"})
+	public String PolyAndRouting(@Validated Search search, BindingResult result, Model model) {
+		
+		return "polygon-and-routing";
+	}
+	
+	/**
 	 * Mapping for a "New Query" button in the home webpage to send for a new webpage, 
 	 * one containing an address form to input new data in an instance of Search.
 	 * 

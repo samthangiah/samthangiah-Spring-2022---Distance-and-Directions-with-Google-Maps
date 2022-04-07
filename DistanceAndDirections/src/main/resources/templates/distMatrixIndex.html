@@ -6,6 +6,15 @@
 		height: 600px;
 		width: 100%;
 	}
+	
+	.scrollTable{
+		height: 150px;
+		overflow-y: scroll;
+	}
+	
+	.highlight{
+		background: #ddd;
+	}
 	</style>
 	
 	<script type="text/javascript" th:inline="javascript">
@@ -50,16 +59,30 @@
 		var lineSymbol = {
 				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
 				strokeColor: 'black',
+				strokeWeight: 1.0,
+				strokeOpacity: 1.0,
+				fillOpacity: 1.0,
+				fillColor: 'black',
+				scale: 3,
 			};
+		var polyOptions = new google.maps.Polyline({
+			clickable: 'false',
+			strokeColor: '#66F9EF',
+			strokeOpacity: .75,
+			strokeWeight: 10,
+			icons: [{
+				icon: lineSymbol,
+				offset: '30px',
+				repeat: '50px',
+			}],
+		})
 		
 		let directionsRenderer = new google.maps.DirectionsRenderer({
 			draggable: true, 
-			polyLineOptions: {
-				icons: [{
-					icon: lineSymbol,
-					offset: '30px',
-					repeat: '50px',
-				}]
+			polyLineOptions: polyOptions,
+			markerOptions: {
+				draggable: true,
+			    clickable: true,
 			}
 		});
 		directionsRenderer.setMap(map);
@@ -262,6 +285,9 @@
 	
 <div th:switch="${dist}">
 	<h3>Please enter Origin and Destination</h3>
+		<form action="/polyrouting">
+			<button type="submit">To Polygon and Routing</button>
+		</form>
 	<p><i>Please select "New Query" or view existing ones below</i></p>
 		<div>
 		<form action="/newsearch">
@@ -269,7 +295,8 @@
 		</form>
 		
 		<h2>Queries</h2>
-            <table id="display" border=".5" bordercolor="#A9A9A9">
+		<div class="scrollTable">
+            <table width="100%" id="display" border=".5" bordercolor="#A9A9A9">
                 <thead>
                 	<!-- Headings for query table -->
                     <tr>
@@ -295,6 +322,7 @@
                 </tr>
             	</tbody>
        		</table>
+       		</div>
         </div>
 </div>
 		<div>
@@ -305,7 +333,7 @@
         
         	<div id="map"></div>
         	
-        	<script async
+        	<script async defer
     		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg&callback=initMap">
 			</script>
 			<!-- Script containing methods for building dynamic map on page. Should be moved to its own .js file once issues are resolved or testing is complete -->

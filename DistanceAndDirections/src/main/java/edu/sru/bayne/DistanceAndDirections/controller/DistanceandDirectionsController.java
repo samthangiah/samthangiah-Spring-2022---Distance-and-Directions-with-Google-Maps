@@ -126,6 +126,11 @@ public class DistanceandDirectionsController{
 	    return "redirect:/distance-matrix";
 	}
 	
+	@RequestMapping({"/polyrouting"})
+	public String PolyAndRouting(@Validated Search search, BindingResult result, Model model) {
+		
+		return "polygon-and-routing";
+	}
 	/**
 	 * Gets mapping for directions (directions.html)page. Mapping is dependent on 
 	 * id of the Search Instance. This entity is used to display directions of the 

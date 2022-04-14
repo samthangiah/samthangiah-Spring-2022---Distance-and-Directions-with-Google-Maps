@@ -61,6 +61,16 @@
 	origin. There is also a getDirections method that contains a origin and destination parameter that returns
 	the string directions. There's also setters and getters for origin and destination as well.  
 
+/*
+* SaveTest.java 
+*/
 
+		This class is used to read the contents of the data.txt file. The data.txt file is where the hashtable 
+	content is being displayed.  
 
+/*
+* data.txt 
+*/
+
+		This is where the contents of the hashtable is being saved and read from. 
 

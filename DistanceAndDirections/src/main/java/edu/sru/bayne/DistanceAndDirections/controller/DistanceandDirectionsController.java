@@ -32,13 +32,14 @@ public class DistanceandDirectionsController{
 	
 	private SearchRepository searchRepo;
 	private DataController dataController = new DataController();
-	private Table distanceTable;
+	private Table dataTable;
 	
 	
 	public DistanceandDirectionsController(SearchRepository searchRepo) {
 		this.searchRepo = searchRepo;
 		dataController.readFromTextFile();
-		distanceTable = dataController.getTable();
+		dataTable = dataController.getTable();
+		
 	}
 	
 	
@@ -117,18 +118,17 @@ public class DistanceandDirectionsController{
 		
 	    //hash table is checked here before calling API
 	    if (search.getqDistance() >= 0.0) {
-	    	if((distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) && distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() != 0) {
+	    	if((dataTable.contains(search.getOrigin(), search.getDestination())||dataTable.contains(search.getDestination(), search.getOrigin()))) {
 	    		
-	    		search.setqDistance(distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
-	    		System.out.println("got distance " + distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() + " from HASHTABLE");
+	    		search.setqDistance(dataTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
+	    		System.out.println("got distance " + dataTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() + " from HASHTABLE");
 	    	}
 	    	else {
 	    		search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
 				System.out.println("Distance called API to set to: " + search.getqDistance());
-				distanceTable.add(search.getOrigin(), search.getDestination());
-				distanceTable.getDataObject(search.getOrigin(), search.getDestination()).setDistance(search.getqDistance());
-				distanceTable.add(search.getDestination(), search.getOrigin());
-				distanceTable.getDataObject(search.getDestination(), search.getOrigin()).setDistance(search.getqDistance());
+				
+				dataTable.add(search.getOrigin(), search.getDestination(), search.getqDistance());
+				dataTable.add(search.getDestination(), search.getOrigin(), search.getqDistance());
 	    	}
 	    }
 	    
@@ -156,6 +156,7 @@ public class DistanceandDirectionsController{
 	 * @param model is the 'Search' entity used by the repository
 	 * @return path to Home
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/find-directions/{id}")
     public String pullDirections(@PathVariable("id") long id, Model model) {
 		
@@ -163,15 +164,43 @@ public class DistanceandDirectionsController{
         Search search = searchRepo.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid query:" + id));
         model.addAttribute("query", search);
-       DirectionsHolder Holder = new DirectionsHolder();
-        
-     // Call DistanceMatrixAPI to find and set directions
-	    try {
-			search.setqDirections(DirectionsAPI.getDirections(search.getOrigin(), search.getDestination(), Holder));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+       DirectionsHolder holder = new DirectionsHolder();
+       
+       //check to see if the entry exists in the hash table and if there are directions in it
+       if(dataTable.contains(search.getOrigin(), search.getDestination()) && dataController.getDirections(search.getOrigin(), search.getDestination()) != null) {
+    	   
+    	   //creates a directions string in the format that the search object needs to properly display on the webpage
+    	   String[] directions = dataTable.getDataObject(search.getOrigin(), search.getDestination()).getDirections();
+    	   String temp = "";
+    	   for(int i = 0; i < directions.length; i++) {
+    		   int j = i + 1;
+    		   //loop creating the string
+    		   temp = temp.concat("(Step " + j + "):"+ directions[i] +"\n");
+    	   }
+    	   search.setqDirections(temp);
+       }else{
+    	// Call DistanceMatrixAPI to find and set directions
+   	    try {
+   	    	//if there isn't an entry, get it from the api and populate both the hash table and the database
+   	    	String output = DirectionsAPI.getDirections(search.getOrigin(), search.getDestination(), holder);
+   			search.setqDirections(output);
+   			String[] directions = new String[holder.getDirections().size()];
+   			int[] iterator = new int[1];
+   			iterator[0] = 0;
+   			holder.getDirections().forEach((s)->{
+   				directions[iterator[0]] = s.toString();
+   				iterator[0]++;
+   			});
+   			dataTable.add(search.getOrigin(), search.getDestination(), DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()), directions);
+   			dataController.writeToTextFile();
+   		} catch (IOException e) {
+   			// TODO Auto-generated catch block
+   			e.printStackTrace();
+   		}
+       }
+       
+       
+     
 	    
 	    //Generate URL for static map
 	    //CreateMap myMap = new CreateMap();

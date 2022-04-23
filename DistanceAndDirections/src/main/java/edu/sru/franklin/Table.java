@@ -43,6 +43,16 @@ public class Table implements java.io.Serializable{
 		float distance = 0;
 		table.put(temp.hashCode(), new DataObject(origin, destination, distance));
 	}
+	public void add(String origin, String destination, float getqDistance) {
+		String temp = origin.concat(destination);
+		float distance = 0;
+		table.put(temp.hashCode(), new DataObject(origin, destination, distance));
+	}
+	
+	public void add(String origin, String destination, float distance, String[] directions) {
+		String temp = origin.concat(destination);
+		table.put(temp.hashCode(), new DataObject(origin, destination, distance, directions));
+	}
 	
 	/**
 	 * 
@@ -64,16 +74,7 @@ public class Table implements java.io.Serializable{
 	 * used for TESTING should be removed
 	 */
 	public void printTable() {
-		Enumeration<DataObject> e = table.elements();
-		DataObject temp;
-		while(e.hasMoreElements()) {
-			temp = e.nextElement();
-			System.out.println("Origin: " + temp.getOrigin() + 
-					" Destination: " + temp.getDestination() +
-					" Distance: " + temp.getDistance() +
-					" Directions: " + temp.getDirections() + "\n");
-		}
-	
+		printTableHeader(table.size());
 	}
 	public void printTableHeader(int length) {
 		Enumeration<DataObject> e = table.elements();
@@ -81,17 +82,25 @@ public class Table implements java.io.Serializable{
 		DataObject temp;
 		while(j < length && e.hasMoreElements()) {
 			temp = e.nextElement();
+			System.out.println("-----------------------------------------------------");
 			System.out.println("Origin: " + temp.getOrigin() + 
-					" Destination: " + temp.getDestination() +
-					" Distance: " + temp.getDistance() +
-					" Directions: " + temp.getDirections() + "\n");
+					"\nDestination: " + temp.getDestination() + "\n-----------------------------------------------------" +
+					"\nDistance: " + temp.getDistance() + 
+					"\n\nDirections:");
+			for(String s:temp.getDirections()) {
+				System.out.println(s);
+			}
+			System.out.println("\n");
 			j++;
 		}
+		System.out.println("Total Entries: " + j);
 	
 	}
 	public Hashtable<Integer,DataObject> getTable() {
 		return table;
 	}
+
+
 
 	
 	

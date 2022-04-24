@@ -14,7 +14,14 @@ public class DataObject implements java.io.Serializable{
 	public DataObject(String origin, String destination, float distance) {
 		this.origin = origin;
 		this.destination = destination;
+		
 		this.distance = distance;
+	}
+	public DataObject(String origin, String destination, float distance, String[] directions) {
+		this.origin = origin;
+		this.destination = destination;
+		this.distance = distance;
+		this.directions = directions;
 	}
 
 	

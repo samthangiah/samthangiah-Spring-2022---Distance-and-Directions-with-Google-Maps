@@ -92,7 +92,7 @@ public class DistanceMatrixAPI {
 			{
 				recDataSB.append(recData);
 			}
-			//System.out.println(recDataSB.toString());
+			System.out.println(recDataSB.toString());
 			distance = parseDistance(recDataSB.toString());
 		}
 		catch (IOException e)

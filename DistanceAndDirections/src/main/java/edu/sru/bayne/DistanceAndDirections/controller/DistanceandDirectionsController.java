@@ -112,26 +112,55 @@ public class DistanceandDirectionsController{
 		
 		search.setOrigin();
 		search.setDestination();
+		String testOri = search.getOrigin().replaceAll("\\s", "");
+		String testDes = search.getDestination().replaceAll("\\s", "");
+		boolean noAdd = false;
+		
+		
+		//Failsafe for missing data.
+		if(testOri == "" && testDes != "")
+		{
+			search.setOrigin(search.getDestination());
+			noAdd = true;
+		}
+		else if(testDes == "" && testOri != "")
+		{
+			search.setDestination(search.getOrigin());
+			noAdd = true;
+		}
+		else if(testOri == "" && testDes == "")
+		{
+			search.setOrigin("Slippery Rock University of Pennsylvania");
+			search.setDestination("Slippery Rock University of Pennsylvania");
+			noAdd = true;
+		}
+		
 		System.out.println("Address 1: " + search.getOrigin());
 		System.out.println("Address 2: " + search.getDestination());
 		
+		for(int i=0; i<5; i++) {}
+		
+		
 	    //hash table is checked here before calling API
-	    if (search.getqDistance() >= 0.0) {
-	    	if((distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) && distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() != 0) {
+		if(noAdd != true)
+		{
+
+	    		if((distanceTable.contains(search.getOrigin(), search.getDestination())||distanceTable.contains(search.getDestination(), search.getOrigin())) && distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() != 0) {
 	    		
-	    		search.setqDistance(distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
-	    		System.out.println("got distance " + distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() + " from HASHTABLE");
-	    	}
-	    	else {
-	    		search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
-				System.out.println("Distance called API to set to: " + search.getqDistance());
-				distanceTable.add(search.getOrigin(), search.getDestination());
-				distanceTable.getDataObject(search.getOrigin(), search.getDestination()).setDistance(search.getqDistance());
-				distanceTable.add(search.getDestination(), search.getOrigin());
-				distanceTable.getDataObject(search.getDestination(), search.getOrigin()).setDistance(search.getqDistance());
-	    	}
-	    }
-	    
+	    			search.setqDistance(distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance());
+	    			System.out.println("got distance " + distanceTable.getDataObject(search.getOrigin(), search.getDestination()).getDistance() + " from HASHTABLE");
+	    		}
+	    		else {
+	    			search.setqDistance(DistanceMatrixAPI.getDistance(search.getOrigin(), search.getDestination()));
+					System.out.println("Distance called API to set to: " + search.getqDistance());
+					distanceTable.add(search.getOrigin(), search.getDestination());
+					distanceTable.getDataObject(search.getOrigin(), search.getDestination()).setDistance(search.getqDistance());
+					distanceTable.add(search.getDestination(), search.getOrigin());
+					distanceTable.getDataObject(search.getDestination(), search.getOrigin()).setDistance(search.getqDistance());
+					dataController.writeToTextFile();
+	    		}
+	    	
+		}
 	    //these getters call the setters and set the cooridnates if null
 	    System.out.println(search.getOrigin() + " has coordinates " + search.getLat1() + ", " + search.getLng1());
 	    System.out.println(search.getDestination() + " has coordinates " + search.getLat2() + ", "  + search.getLng2());
@@ -142,7 +171,7 @@ public class DistanceandDirectionsController{
 		}*/
 	    System.out.println("Distance = " + search.getqDistance());
 	    searchRepo.save(search);
-	    dataController.writeToTextFile();
+	    
 	    
 	    return "redirect:/distance-matrix";
 	}

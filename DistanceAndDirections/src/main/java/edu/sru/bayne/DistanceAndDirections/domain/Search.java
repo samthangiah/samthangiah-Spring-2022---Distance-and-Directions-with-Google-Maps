@@ -1,7 +1,6 @@
 package edu.sru.bayne.DistanceAndDirections.domain;
 
 import java.io.IOException;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -136,7 +135,7 @@ public class Search {
 	}
 
 	public void setOrigin(String origin) {
-		this.origin = origin;
+		this.origin = origin.toUpperCase();
 	}
 	
 	public void setOrigin() {
@@ -166,7 +165,7 @@ public class Search {
 	}
 
 	public void setDestination(String destination) {
-		this.destination = destination;
+		this.destination = destination.toUpperCase();
 	}
 	
 	public void setDestination() {

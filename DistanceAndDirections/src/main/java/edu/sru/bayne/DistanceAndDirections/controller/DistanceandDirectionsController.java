@@ -112,6 +112,8 @@ public class DistanceandDirectionsController{
 		
 		search.setOrigin();
 		search.setDestination();
+		search.setOrigin(search.getOrigin());
+		search.setDestination(search.getDestination());
 		String testOri = search.getOrigin().replaceAll("\\s", "");
 		String testDes = search.getDestination().replaceAll("\\s", "");
 		boolean noAdd = false;

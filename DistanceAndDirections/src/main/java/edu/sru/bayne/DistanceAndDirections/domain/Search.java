@@ -1,7 +1,6 @@
 package edu.sru.bayne.DistanceAndDirections.domain;
 
 import java.io.IOException;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

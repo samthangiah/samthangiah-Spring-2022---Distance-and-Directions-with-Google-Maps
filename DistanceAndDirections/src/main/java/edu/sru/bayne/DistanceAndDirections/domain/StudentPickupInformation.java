@@ -70,14 +70,17 @@ public class StudentPickupInformation {
 	
     /**
      * Constructor for StudenPickupInformation.java
+     * @throws InterruptedException 
+     * @throws IOException 
      */
-    public StudentPickupInformation(long id, int count, String pickupLoc, String roadName, String lng, String lat) {
+    public StudentPickupInformation(long id, int count, String pickupLoc, String roadName, String lng, String lat) throws IOException, InterruptedException {
 	        this.id = id;
 	        this.count = count;
 	        this.pickupLoc = pickupLoc;
 	        this.roadName = roadName;
 	        this.longitude = lng;
 	        this.latitude = lat;
+	        this.checkGeos();
 	    }
     /**
      * Confirms the existence of GeoCodes for the Point

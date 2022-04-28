@@ -1,7 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
+	
 
+<style>
+	.NAV
+	{
+		height: 50px;
+		width: 100%;
+		background-color: #006747;
+	}
+	body
+	{
+		font-family: 'Fredoka One', cursive;
+	}
+</style>
 <script th:inline="javascript">
 
 function formatDirections(){
@@ -18,11 +34,29 @@ formatDirections();
 <meta charset="ISO-8859-1">
 <title>Directions</title>
 </head>
+<body>
+	<div class="NAV">
+
+	<table class="NAV_Table">
+		<tr>
+			<th style="width:50px"></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/distance-matrix"><button type="submit">Directions</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/polyrouting"><button type="submit">Clustering</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		<!--	<th style="margin:15px;vertical-align: middle"><button type="button">Routing</button></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/logs"><button type="submit">Logs</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/whychooseus"><button type="submit">Why Choose Us?</button></form></th>
+			<th style="vertical-align: middle">|</th> -->
+		</tr>
+	</table>
+
+</div>
 <body onLoad="javascript:loadPage();">
-		<!-- back button -->
-		<form action="/distance-matrix">
-			<button type="submit">Existing Queries</button>
-		</form>
+
 		
 		<h2>Directions</h2>
 		

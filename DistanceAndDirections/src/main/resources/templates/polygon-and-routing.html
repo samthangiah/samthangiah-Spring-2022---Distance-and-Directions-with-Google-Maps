@@ -1,26 +1,119 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
+	
 	<style>
 	#map{
 		height: 600px;
 		width: 100%;
 	}
-	
-	.xcel{
-		height: 250px;
-		width: 100%;
-		overflow-y: scroll;
-	}
-	
 	#legend {
     	font-family: Arial, sans-serif;
    		background: #fff;
     	padding: 10px;
     	margin: 10px;
     	border: 3px solid #000;
-  }
+    }
+    
+	}
+	
+	.Q_Head
+	{
+	
+	}
+	.NAV_Table
+	{ 
+		border-spacing: 5px;
+	}
+	
+	.NAV
+	{
+		height: 50px;
+		width: 100%;
+		background-color: #006747;
+	}
+	.content-table
+    {
+        border-collapse: collapse;
+        margin: 25px 0; Spaces between content are set
+        font-size: 0.9em;
+        width: 100%
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        height: 200px;
+		overflow-y: scroll;
+    }
+
+    .content-table thead tr
+    {
+        background-color: #006747;
+        color: #ffffff;
+        text-align: left
+        font-weight: bold;
+    }
+
+    .content-table th
+    {
+        padding: 12px 15px;
+    }
+    
+    .content-table td
+    {
+        padding: 12px 15px;
+    }
+
+    .content-table tbody tr
+    {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .content-table tbody tr:nth-of-type(even)
+    {
+        background-color: #f3f3f3;
+    }
+
+    .content-table tbody tr:last-of-type
+    {
+        border-bottom: 2px solid #006747;
+    }
+
+    .content-table tbody tr.active-row
+    {
+        font-weight: bold;
+        color: #00s747;
+    }
+    
+    .highlight{
+		background: #ddd;
+	}
+    
+    .scrollTable{
+    	border: 10px #006747;
+		height: 200px;
+		overflow-y: scroll;
+	}
+	
+	body
+	{
+		font-family: 'Fredoka One', cursive;
+	}
+	li
+	{
+		display: inline;
+	}
+	ul
+	{
+		display: inline;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+
 	</style>
 	
 	<script> 
@@ -338,41 +431,48 @@
 	</script>
 	
 <meta charset="ISO-8859-1">
-<title>Polygons and Routing</title>
+<title>Polygons and Clusters</title>
 </head>
 <body>
+	<div class="NAV">
+
+	<table class="NAV_Table">
+		<tr>
+			<th style="width:50px"></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/distance-matrix"><button type="submit">Directions</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/polyrouting"><button type="submit">Clustering</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<!-- <th style="margin:15px;vertical-align: middle"><button type="button">Routing</button></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/logs"><button type="submit">Logs</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/whychooseus"><button type="submit">Why Choose Us?</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		--></tr>
+	</table>
+
+</div>
 <h1>Polygons with Clustered Routes</h1>
 
-	<hr>
-	
-	<div>
-	<form action="/distance-matrix">
-			<button type="submit">To Distance and Directions</button>
-	</form>
-		
-	<form action="/polyrouting">
-			<button type="submit" disabled>To Polygon and Clustering</button>
-		</form>
-	
-	<form action="/bus-routing-students">
-			<button type="submit">Bus Routing for Students</button>
-		</form>
-	</div>
+	<hr style="color:#006747">
+
 	
 	<p>Upload or select <i>.csv</i> file</p>
 	<input id="myFile" type="file">
-		<button id="process">Process</button>
-		<div  class="xcel">
-		<table id="myTable" border=".5" bordercolor="#A9A9A9"></table>
-		<div id="dvCSV"></div>
+		<button id="process">Process</button> <button id="polygon">Show Area Polygon</button><button onClick="window.location.reload();">Refresh Map</button><button id="markerToggle">Toggle Markers</button>
+		<div  class="content-table">
+		<table id="myTable" class="content-table"></table>
+		<div id="dvCSV" class="content-table"></div>
 		</div>
 	
 	
 	<div>
         <h2>My Map</h2>
-        <button id="polygon">Show Area Polygon</button>
-        <button id="markerToggle">Toggle Markers</button>
-        <hr>
+       
+       
+        <hr style="color:#006747">
         	<div id="legend"><h2>Legend</h2></div>
         	<div id="map"></div>
         	

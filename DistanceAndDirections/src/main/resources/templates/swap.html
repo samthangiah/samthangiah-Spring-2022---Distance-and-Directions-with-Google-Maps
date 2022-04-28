@@ -1,81 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
 	<style>
 	#map{
 		height: 600px;
 		width: 100%;
 	}
 	
-	.navbar
-	{
-		height: 30px;
-		width: 100%;
-		background-color: #006747;
-	}
-	.content-table
-    {
-        border-collapse: collapse;
-        margin: 25px 0; Spaces between content are set
-        font-size: 0.9em;
-        min-width: 400px; sets min size if empty
-        border-radius: 5px 5px 0 0;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .content-table thead tr
-    {
-        background-color: #006747;
-        color: #ffffff;
-        text-align: left
-        font-weight: bold;
-    }
-
-    .content-table th,
-    .content-table td
-    {
-        padding: 12px 15px;
-    }
-
-    .content-table tbody tr
-    {
-        border-bottom: 1px solid #dddddd;
-    }
-
-    .content-table tbody tr:nth-of-type(even)
-    {
-        background-color: #f3f3f3;
-    }
-
-    .content-table tbody tr:last-of-type
-    {
-        border-bottom: 2px solid #006747;
-    }
-
-    .content-table tbody tr.active-row
-    {
-        font-weight: bold;
-        color: #00s747;
-    }
-	
-	body
-	{
-		font-family: 'Fredoka One', cursive;
-	}
-	li
-	{
-		display: inline;	
-	}
-	ul
-	{
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-	}
 	.scrollTable{
 		height: 150px;
 		overflow-y: scroll;
@@ -355,16 +286,12 @@
 
 
 <body>
-	<ul>
-		<li><p>hello</p></li>
-	</ul>
-		<form action="/polyrouting">
-			<button type="submit">Polygon</button>
-		</form>
-
-
 	<h1>Calculating Distance and Directions</h1>
 	<hr color=black>
+	<form action="/polyrouting">
+			<button type="submit">To Polygon and Routing</button>
+		</form>
+	
 <div th:switch="${dist}">
 	<h3>Please enter Origin and Destination</h3>
 	<p><i>Please select "New Query" or view existing ones below</i></p>
@@ -374,7 +301,7 @@
 		</form> 
 		<h2>Queries</h2>
 		<div class="scrollTable">
-            <table width="100%" class="content-table">
+            <table width="100%" id="display" border=".5" bordercolor="#A9A9A9" >
                 <thead>
                 	<!-- Headings for query table -->
                     <tr>
@@ -407,11 +334,8 @@
         <h2>My Map</h2>
         <hr>
         <h3> Marker Coordinates: </h3> 
-        <ul>
-        	<li id="LatPos">Coordinates will be shown here!</li>
-        	<li><button onClick="window.location.reload();">Refresh Map</button>
-        	<p></p>
-        </ul>
+        <p id="LatPos">Coordinates will be shown here!</p>
+        
         	<div id="map"></div>
         	
         	<script async

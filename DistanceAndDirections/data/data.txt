@@ -1,7 +1,11 @@
-BUTLER PA    	BUFFALO NY    	190.0	null
-BUTLER PA    	CHICAGO IL    	462.0	null	
+BUFFALO NY    	BUTLER PA    	190.0	null	
+HOLLYWOOD    	NY NY    	2802.0	null	
 CHICAGO IL    	BUTLER PA    	462.0	null	
-DALLAS TX    	DALLAS TX    	0.0	null	
-DALLAS    	DALLAS    	0.0	null	
+BUTLER PA    	BUFFALO NY    	190.0	null	
+BUTLER PA    	CHICAGO IL    	462.0	null	
 ERIE    	ERIE    	0.0	null	
-BUFFALO NY    	BUTLER PA    	190.0	null
+NY NY    	HOLLYWOOD    	2802.0	null	
+BUTLER    	PITTSBURGH    	363.0	null
+DALLAS TX    	DALLAS TX    	0.0	null	
+PITTSBURGH    	BUTLER    	363.0	null
+DALLAS    	DALLAS    	0.0	null	

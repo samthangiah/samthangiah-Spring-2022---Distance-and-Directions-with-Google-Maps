@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
+	<style>
+	#map{
+		height: 600px;
+		width: 100%;
+	}
+	body
+	{
+		font-family: 'Fredoka One', cursive;
+	}
+	.button{
+	color: #006747
+	}
+	
+	.scrollTable{
+		height: 150px;
+		overflow-y: scroll;
+	}
+	
+	.highlight{
+		background: #ddd;
+	}
+	
+	.content-table
+    {
+        border-collapse: collapse;
+        margin: 25px 0; Spaces between content are set
+        font-size: 0.9em;
+        min-width: 400px; sets min size if empty
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-table thead tr
+    {
+        background-color: #006747;
+        color: #ffffff;
+        text-align: left
+        font-weight: bold;
+    }
+
+    .content-table th,
+    .content-table td
+    {
+        padding: 12px 15px;
+    }
+
+    .content-table tbody tr
+    {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .content-table tbody tr:nth-of-type(even)
+    {
+        background-color: #f3f3f3;
+    }
+
+    .content-table tbody tr:last-of-type
+    {
+        border-bottom: 2px solid #006747;
+    }
+
+    .content-table tbody tr.active-row
+    {
+        font-weight: bold;
+        color: #00s747;
+    }
+	
+	li
+	{
+		display: inline;	
+	}
+	ul
+	{
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	</style>
+	
+	<script type="text/javascript" th:inline="javascript">
+	let map;
+	let markers = [];
+	let searchArr = [];
+	let searchIndex = 0;
+	
+	<!-- Add DB object Ids and coordinates to searchArr-->
+	/*[# th:each="n : ${dist}"]*/
+		searchArr.push(["[(${n.getId()})]",
+						"[(${n.getLat1()})]",
+						"[(${n.getLng1()})]",
+						"[(${n.getLat2()})]",
+						"[(${n.getLng2()})]"]);
+	/*[/]*/
+	
+	//Testing to see contents of searchArr
+	//outer
+	//for(let o=0; o<searchArr.length;o++){
+		//inner
+		//let innerLength = searchArr[o].length;
+		//for(let i=0; i<innerLength;i++){
+			//if(searchArr[i]=='386')
+			//console.log("["+ o +"]["+ i +"]" + searchArr[o][i]);
+		//}
+	//}
+	
+<!--//creates map with desired traits and behaviors-->
+	function initMap(){
+		//for route
+		
+	<!--//const tempCenter = {lat: 41.0630 , lng: -80.0412 }-->
+		map = new google.maps.Map(document.getElementById("map"), {
+			zoom: 7,
+			center: {lat: 40.7033 , lng: -77.5945 },
+			streetViewControl: false,		
+		});
+		
+		let directionsService = new google.maps.DirectionsService();
+		//options for polyline, for adding directional arrows
+		var lineSymbol = {
+				path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+				strokeColor: 'black',
+				strokeWeight: 1.0,
+				strokeOpacity: 1.0,
+				fillOpacity: 1.0,
+				fillColor: 'black',
+				scale: 3,
+			};
+		var polyOptions = new google.maps.Polyline({
+			clickable: 'false',
+			strokeColor: '#66F9EF',
+			strokeOpacity: .75,
+			strokeWeight: 10,
+			icons: [{
+				icon: lineSymbol,
+				offset: '30px',
+				repeat: '50px',
+			}],
+		})
+		
+		let directionsRenderer = new google.maps.DirectionsRenderer({
+			draggable: true, 
+			polylineOptions: polyOptions,
+			markerOptions: {
+				draggable: true,
+			    clickable: true,
+			}
+		});
+		directionsRenderer.setMap(map);
+		directionsRenderer.addListener("directions_changed", () => {
+			const directions = directionsRenderer.getDirections();
+		});
+		
+		
+	<!--//when map is clicked on, calls marker function-->
+		map.addListener("click", (e) => {
+		    placeMarker(e.latLng, map);
+		   <!-- //applies lat/lng info to text area-->
+		    document.getElementById("LatPos").textContent = e.latLng;
+		});
+		
+		<!-- addPair(40.7220003, -80.1291846, 40.8641043, -79.8938038) -->
+		
+		let buttonArray = document.querySelectorAll('.markerClass');
+		buttonArray.forEach(element => {
+			let tempId = element.id;
+			element.addEventListener('click', (e) =>{
+				
+				console.log('works at ' + element.id);
+				
+			});
+			google.maps.event.addDomListener(document.getElementById(tempId), 'click', () =>{
+			<!-- need to get my lat/long from db provided I have Id -->
+					setIndexById(tempId);
+					//console.log("Index is still: " + searchIndex);
+					newPair(searchIndex);
+					//newPair(40.7220003, -80.1291846, 40.8641043, -79.8938038);
+					makeRoute(directionsService, directionsRenderer);
+				});
+			
+		});
+		
+		
+	<!--//makes marker at the location and pans to it. sets to draggable, so we may adjust the position at will
+	    //Also set to clickable to grab coordinates (should also be used for implementing delete/edit/etc.)-->
+		function placeMarker(latLng, map) {
+		  const marker = new google.maps.Marker({
+		    position: latLng,
+		    map: map,
+		    draggable: true,
+		    clickable: true,
+		  });
+		  
+		  
+		  <!--//make info window-->
+			const infowindow = new google.maps.InfoWindow({
+			content: infoContext,
+		});
+		
+		<!--//add listener for on-click events-->
+		  marker.addListener("click", (e) => {
+			displayCoord(e.latLng);
+			highlightMarker(marker);
+	
+			});
+		
+		<!--//double-click to open info window-->
+		  marker.addListener("dblclick", (e) => {
+				infowindow.open({
+					  map: map,
+				      anchor: marker,
+				      shouldFocus: true,
+				    });
+				});
+		  
+		  
+		  markers.push(marker);
+		};
+		
+		function setIndexById(tId){
+			let realId = String(tId.replaceAll("mark", ""));
+			//console.log("tId: " + tId + typeof(tId) + ", realId: " + realId + typeof(realID));
+			//[object][0=Id, 1=Lat1, 2=Lng1, 3=Lat2, 4=Lng2]
+			// this checks the id of each obj in array, compares the id, 
+			// then sets index in previous scope to the match
+			let i = 0;
+			while(realId != searchArr[i][0]){
+				//console.log("Iterated. Now at " + "["+ (i+1) +"]["+ 0 +"]");
+				i++;
+			}
+			if(realId == searchArr[i][0]){
+				searchIndex = i;
+				//console.log("Found: " + searchArr[i][0] + " = " + realId + ", Index is: " + searchIndex);
+			}
+			else console.log("Error, no ID match");
+		}
+		
+		function newPair(index){
+			deleteMarkers();
+			
+			let lat1 = Number(searchArr[index][1]);
+			let lng1 = Number(searchArr[index][2]);
+			let lat2 = Number(searchArr[index][3]);
+			let lng2 = Number(searchArr[index][4]);
+			
+			const add1 = new google.maps.LatLng(lat1, lng1);
+			const add2 = new google.maps.LatLng(lat2, lng2);
+			placeMarker(add1, map);
+			placeMarker(add2, map);	
+			
+			markers[0].setLabel("Start");
+			markers[1].setLabel("End");
+			
+			changeCenter();
+			
+		}
+		
+		function makeRoute(directionsService, directionsRenderer){
+
+			//console.log("Address 1: " + markers[0].getPosition());
+			//console.log("Address 2: " + markers[1].getPosition());
+			
+			let pos1 = markers[0].getPosition();
+			let pos2 = markers[1].getPosition();
+			//remove once custom polyline replaces renderer
+			deleteMarkers();
+			
+			directionsService
+		    .route({
+		      origin: pos1,
+		      destination: pos2,
+		      travelMode: 'DRIVING',
+		    })
+		    .then((response) => {
+		      directionsRenderer.setDirections(response);
+		    })
+		    .catch((e) => window.alert("Directions request failed due to " + status));
+		}
+		
+		function deleteMarkers(){
+			for (let i = 0; i < markers.length; i++) {
+			    markers[i].setMap(null);
+			  }
+			markers = [];
+		}
+		
+		function changeCenter(){
+			let centerLat = 0;
+			let centerLng = 0;
+			
+			for (let i = 0; i < markers.length; i++) {
+			    centerLat += markers[i].getPosition().lat();
+			    centerLng += markers[i].getPosition().lng();
+			  }
+			
+			centerLat = centerLat/2;
+			centerLng = centerLng/2;
+			const center = new google.maps.LatLng(centerLat, centerLng);
+			map.setCenter(center);
+		}
+	
+		
+
+			
+	};
+	
+	
+	function displayCoord(latLng){
+		document.getElementById("LatPos").textContent = latLng;
+	}
+	
+<!--//Following functions are used to bounce a marker to indicate 
+	//which is being viewed, and ends the animation on a timer -->
+	
+	function highlightMarker(marker){
+	marker.setAnimation(google.maps.Animation.BOUNCE);
+	setTimeout(stopHighlight, 2000, marker);
+	}
+	
+	function stopHighlight(marker){
+		marker.setAnimation(null);
+	}
+	
+	
+	<!------------------------------------------------------------------->
+	
+<!-- //Object using data from database to display within info windows
+	 //Included: Address, Coordinates, Cluster
+	 //Not yet added: add/edit/delete **MUST CONNECT TO DATA WITH THYMELEAF**-->
+	const infoContext = 
+		'<div id="context">' +
+		'<h1 id="heading> Test Heading </h1>"' +
+		'<h3 id="address"> Address </h3>' +
+		'<p> Address goes here! </p>' +
+		'<h3 id="coord"> Coordinates </h3>' +
+		'<p> Lat/Lng goes here! </p>' +
+		'<h3 id="cluster"> Cluster </h3>' +
+		'<p> Cluster # goes here! </p>' +
+		'</div>';
+	
+</script>
+
+
+<meta charset="ISO-8859-1">
+<title>Find Distance</title>
+</head>
+
+<body>
+	<div id="navDiv class=>
+		<ul id="navBar">
+			<li><form action="/polyrouting"><button type="submit">To Polygon and Routing</button></form></li>
+		<ul>
+	</div>
+	
+	<h1>Calculating Distance and Directions</h1>
+	<hr color=black>
+	
+	
+<div th:switch="${dist}">
+	<h3>Please enter Origin and Destination</h3>
+	<p><i>Please select "New Query" or view existing ones below</i></p>
+		<div>
+		<form action="/newsearch">
+			<button type="submit">New Query</button>
+		</form> 
+		<h2>Queries</h2>
+		<div class="scrollTable">
+            <table id="display" class="content-table">
+                <thead>
+                	<!-- Headings for query table -->
+                    <tr>
+                    	<th>Id			 </th>
+                        <th>Origin       </th>
+                        <th>Destination  </th>
+                        <th>Distance (mi)</th>
+                        <th>Directions   </th>
+                        <th>Delete		 </th>
+                        <th>To Map </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- Shows data for each entity found in database -->
+                <tr th:classname="'table' + ${search.getId()}" th:each="search : ${dist}">
+                	<td th:text="${search.getId()}"></td>
+                    <td th:text="${search.getOrigin()}"></td>
+                    <td th:text="${search.getDestination()}"></td>
+                    <td th:text="${search.getqDistance()}"></td>
+                    <td><a th:href="@{/find-directions/{id}(id=${search.getId()})}">Directions</a></td>
+                    <td><a th:href="@{/delete/{id}(id=${search.getId()})}">Delete</a></td>
+                    <td><button th:id="'mark' + ${search.getId()}" class="markerClass">Display</button></td>
+                </tr>
+            	</tbody>
+       		</table>
+       		</div>
+        </div>
+</div>
+		<div>
+        <h2>My Map</h2>
+        <hr>
+        <h3> Marker Coordinates: </h3> 
+        <p id="LatPos">Coordinates will be shown here!</p>
+        
+        	<div id="map"></div>
+        	
+        	<script async
+    		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg&callback=initMap">
+			</script>
+			<!-- Script containing methods for building dynamic map on page. Should be moved to its own .js file once issues are resolved or testing is complete -->
+
+		</div>
+
+	
+</body>
+</html>

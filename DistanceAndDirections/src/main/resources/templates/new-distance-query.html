@@ -2,6 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
+	
 <title>Add Query</title>
 
  	<script>
@@ -26,11 +30,49 @@ function concatAdd(){
 }
 </script>
 
+<style>
+			.NAV_Table
+	{ 
+		border-spacing: 5px;
+	}
+		.NAV
+	{
+		height: 50px;
+		width: 100%;
+		background-color: #006747;
+	}
+	body
+	{
+		font-family: 'Fredoka One', cursive;
+	}
+	
+</style>
+
 </head>
 <body>
+	<div class="NAV">
+
+	<table class="NAV_Table">
+		<tr>
+			<th style="width:50px"></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/distance-matrix"><button type="submit">Directions</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/polyrouting"><button type="submit">Clustering</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		<!-- <th style="margin:15px;vertical-align: middle"><button type="button">Routing</button></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/logs"><button type="submit">Logs</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/whychooseus"><button type="submit">Why Choose Us?</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		-->
+		</tr>
+	</table>
+	</div>
 <div>
 	<h2>New Search Query</h2>
-	<hr color=black>
+	<hr color=#006747>
 		<p>Please enter <b>TWO</b> addresses to be queried</p>
 		<p>For the most accurate results fill out each box with correct information</p>
 		<form action="/distance-matrix">
@@ -42,7 +84,7 @@ function concatAdd(){
 <form id="AddressForm" action="#" th:action="@{/add-query}" th:object="${search}" method="post">
   
   	<!-- Form for starting address -->
- 	<h3>Address 1</h3>				 
+ 	<h3>Starting Address</h3>				 
     <label for="sa1">Street</label><br>
   	<input id="sa1" th:field="*{street1}" type="text" size="50" placeholder="Street" name="address1"><br>
     <label for="ci1">City</label><br>
@@ -55,7 +97,7 @@ function concatAdd(){
   	<input id="co1" th:field="*{country1}" type="text" size="20" placeholder="Country" name="address1"><br>
     
     <!-- Form for ending address -->
-    <h3>Address 2</h3>				
+    <h3>Ending Address</h3>				
     <label for="sa2">Street </label><br>
   	<input id="sa2" th:field="*{street2}" type="text" size="50" placeholder="Street" name="address2"><br>
     <label for="ci2">City </label><br>

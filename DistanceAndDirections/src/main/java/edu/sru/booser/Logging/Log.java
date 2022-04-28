@@ -75,16 +75,19 @@ public class Log {
 	 * Outputs the entire FILE to the console.
 	 * @throws IOException
 	 */
-	public static void PRINTLog() throws IOException {
+	public static String PRINTLog() throws IOException {
 		File myObj = new File(FILE);
 		Scanner myReader = new Scanner(myObj);
+		String output = "";
 		while (myReader.hasNext())
 		{
 			String data = myReader.nextLine();
 			System.out.println(data);
+			output = output + data;
 			
 		}
 		myReader.close();
+		return "";
 	}
 	
 	/**

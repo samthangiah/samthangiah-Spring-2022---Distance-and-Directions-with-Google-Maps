@@ -10,9 +10,18 @@
 		width: 100%;
 	}
 	
-	.navbar
+	.Q_Head
 	{
-		height: 30px;
+	
+	}
+	.NAV_Table
+	{ 
+		border-spacing: 5px;
+	}
+	
+	.NAV
+	{
+		height: 50px;
 		width: 100%;
 		background-color: #006747;
 	}
@@ -35,7 +44,11 @@
         font-weight: bold;
     }
 
-    .content-table th,
+    .content-table th
+    {
+        padding: 12px 15px;
+    }
+    
     .content-table td
     {
         padding: 12px 15px;
@@ -61,6 +74,16 @@
         font-weight: bold;
         color: #00s747;
     }
+    
+    .highlight{
+		background: #ddd;
+	}
+    
+    .scrollTable{
+    	border: 10px #006747;
+		height: 200px;
+		overflow-y: scroll;
+	}
 	
 	body
 	{
@@ -68,22 +91,18 @@
 	}
 	li
 	{
-		display: inline;	
+		display: inline;
 	}
 	ul
 	{
+		display: inline;
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
 	}
-	.scrollTable{
-		height: 150px;
-		overflow-y: scroll;
-	}
 	
-	.highlight{
-		background: #ddd;
-	}
+	
+	
 	</style>
 	
 	<script type="text/javascript" th:inline="javascript">
@@ -354,25 +373,45 @@
 </head>
 
 
-<body>
-	<ul>
-		<li><p>hello</p></li>
-	</ul>
-		<form action="/polyrouting">
-			<button type="submit">Polygon</button>
-		</form>
+<body style="backgroud-color:000000; font color:#white">
+	<div class="NAV">
+
+	<table class="NAV_Table">
+		<tr>
+			<th style="width:50px"></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/distance-matrix"><button type="submit">Directions</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/polyrouting"><button type="submit">Clustering</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		<!--	<th style="margin:15px;vertical-align: middle"><button type="button">Routing</button></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/logs"><button type="submit">Logs</button></form></th>
+			<th style="vertical-align: middle">|</th>
+			<th style="margin:15px;vertical-align: middle"><form action="/whychooseus"><button type="submit">Why Choose Us?</button></form></th>
+			<th style="vertical-align: middle">|</th>
+		-->
+		</tr>
+	</table>
+
+</div>
+		
 
 
-	<h1>Calculating Distance and Directions</h1>
-	<hr color=black>
+	<h1>Directions</h1>
+	<p>Click <i style="font-color:#006747">New Trip</i> to see a new route appear on the table bellow</p> 
+	<hr color=#006747>
 <div th:switch="${dist}">
-	<h3>Please enter Origin and Destination</h3>
-	<p><i>Please select "New Query" or view existing ones below</i></p>
+	<h3></h3>
+		<table class="Q_Head">
+			<tr>
+				<th><h1>Trips</h1></th>
+				<th><form action="/newsearch"><button type="submit">New Trip</button></form></th>
+			</tr>
+		</table>
 		<div>
-		<form action="/newsearch">
-			<button type="submit">New Query</button>
-		</form> 
-		<h2>Queries</h2>
+		
+		
 		<div class="scrollTable">
             <table width="100%" class="content-table">
                 <thead>
@@ -404,12 +443,12 @@
         </div>
 </div>
 		<div>
-        <h2>My Map</h2>
-        <hr>
+        <h1>My Map</h1>
+        <hr style="color:#006747">
         <h3> Marker Coordinates: </h3> 
         <ul>
         	<li id="LatPos">Coordinates will be shown here!</li>
-        	<li><button onClick="window.location.reload();">Refresh Map</button>
+        	<li><button onClick="window.location.reload();">Refresh Map</button></li>
         	<p></p>
         </ul>
         	<div id="map"></div>

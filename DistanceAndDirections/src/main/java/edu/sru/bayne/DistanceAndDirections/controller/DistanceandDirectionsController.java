@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import edu.sru.bayne.DistanceAndDirections.domain.Search;
 import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
+import edu.sru.booser.Logging.Log;
 import edu.sru.booser.datastore.*;
 import edu.sru.franklin.DataController;
 import edu.sru.franklin.DataObject;
@@ -54,6 +55,19 @@ public class DistanceandDirectionsController{
 		return "mapstest.html";
 	}
 	*/
+	@RequestMapping("/whychooseus")
+	public String whychooseus()
+	{
+		System.out.println("Called meme");
+		return"/whychooseus";
+	}
+	Log l = new Log();
+	@RequestMapping("/logs")
+	public String logs(Model model) throws IOException
+	{
+		model.addAttribute("logs", l);
+		return"/logs";
+	}
 	
 	
 	/**
@@ -214,6 +228,7 @@ public class DistanceandDirectionsController{
         return "/directions";
     }
 	
+
 	/**
 	 * Mapping for a call in which a Search instance with a provided id is deleted.
 	 * The "/delete/{id}" page instantly redirects to the "/newsearch" page.

@@ -1,7 +1,10 @@
 package edu.sru.bayne.DistanceAndDirections.controller;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.*;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+
 import edu.sru.bayne.DistanceAndDirections.domain.Search;
+import edu.sru.bayne.DistanceAndDirections.domain.StudentPickupInformation;
 import edu.sru.bayne.DistanceAndDirections.repository.SearchRepository;
 import edu.sru.booser.datastore.*;
 import edu.sru.franklin.DataController;
@@ -69,14 +79,55 @@ public class DistanceandDirectionsController{
 	}
 	
 	/**
-	 * Mapping for the second page for csv uploads, polygons, and routing.
+	 * Mapping for the second page for csv uploads, polygons, and routing (Page 2).
 	 * @param model is the 'Search' entity used by the repository
 	 * @return
 	 */
 	@RequestMapping({"/polyrouting"})
-	public String PolyAndRouting(@Validated Search search, BindingResult result, Model model) {
+	public String polyAndRouting(@Validated Search search, BindingResult result, Model model) {
 		
 		return "polygon-and-routing";
+	}
+	
+	/**
+	 * Mapping for the third page for csv uploads and routing for student pickup locations (Page 3).
+	 * @param model is the 'Search' entity used by the repository
+	 * @return
+	 */
+	@RequestMapping({"/bus-routing-students"})
+	public String studentRouting(@RequestParam("file") MultipartFile file, Model model) {
+		
+		
+		// validate file
+        if (file.isEmpty()) {
+            model.addAttribute("message", "Please select a CSV file to upload.");
+            model.addAttribute("status", false);
+        } else {
+
+            // parse CSV file to create a list of `User` objects
+            try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+
+                // create csv bean reader
+                CsvToBean<StudentPickupInformation> csvToBean = new CsvToBeanBuilder(reader)
+                        .withType(StudentPickupInformation.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .build();
+
+                // convert `CsvToBean` object to list of users
+                List<StudentPickupInformation> users = csvToBean.parse();
+
+                // TODO: save users in DB?
+
+                // save users list on model
+                model.addAttribute("users", users);
+                model.addAttribute("status", true);
+
+            } catch (Exception ex) {
+                model.addAttribute("message", "An error occurred while processing the CSV file.");
+                model.addAttribute("status", false);
+            }
+        }
+		return "student-routing";
 	}
 	
 	/**

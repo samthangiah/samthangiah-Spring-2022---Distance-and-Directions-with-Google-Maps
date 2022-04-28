@@ -288,9 +288,20 @@
 <body>
 	<h1>Calculating Distance and Directions</h1>
 	<hr color=black>
+	
+	<div>
+	<form action="/distance-matrix">
+			<button type="submit" disabled>To Distance and Directions</button>
+	</form>
+		
 	<form action="/polyrouting">
-			<button type="submit">To Polygon and Routing</button>
+			<button type="submit">To Polygon and Clustering</button>
 		</form>
+	
+	<form action="/bus-routing-students">
+			<button type="submit">Bus Routing for Students</button>
+		</form>
+	</div>
 	
 <div th:switch="${dist}">
 	<h3>Please enter Origin and Destination</h3>

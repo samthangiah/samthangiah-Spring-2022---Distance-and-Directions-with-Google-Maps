@@ -25,17 +25,23 @@
 	
 	<script> 
 	//var table; // = document.getElementById("myTable");
-	const myPolyLat = [];
-	const myPolyLng = [];
-	const markerLat = [];
+	const studentId = [];
+	const studentCount = [];
+	const pickupAddress = [];
+	const roadName = [];
 	const markerLng = [];
-	const cluster = [];
-	const clusterPolygons = [];
+	const markerLat = [];
+	let area;
+	let latPlaceholder = "";
+	let lngPlaceholder = "";
+	// [row of coordinates(index)][lng][lat]
+	const callbackData = [];
 	//-------------------------------------------------------------------
 	//Sourced largely from https://qawithexperts.com/article/javascript/read-csv-file-in-javascript-and-html5-filereader-multiple-wa/238
 	//read in csv file, format to html <table>
-	
+	var geoCounter = 0;
 	function processFile() {
+		
 	    var fileSize = 0;
 	    //get file
 	    var theFile = document.getElementById("myFile");
@@ -57,7 +63,9 @@
 	            var lines = content.split("\n");
 	            //loop all rows
 	            console.log("count="+lines.length)
-	            for (var count = 0; count < lines.length; count++) {
+	            //starts at data (not Title or initial empty cells)
+	            //decided by provided .csv format
+	            for (var count = 3; count < lines.length; count++) {
 	                //create a tr element
 	                var row = document.createElement("tr");
 	                //console.log("#1: " + row);
@@ -67,24 +75,67 @@
 	               if(count != lines.length-1){
 	                	
 	            	   //Load content into arrays
+	            	   //easier to use with maps info
+	            	   //console.log("id = "+ rowContent[0]);
 	                	if (rowContent[0] != ""){
-	                		myPolyLng.push(parseFloat(rowContent[0].replaceAll("\"", "")));
+	                		studentId.push(rowContent[0].replaceAll("\"", ""));
 	                	}
-	                	//console.log("polyLat = "+ rowContent[1]);
+	                	//console.log("count = "+ rowContent[1]);
 	                	if (rowContent[1] != "" && rowContent[1] != " " && rowContent[1] != null){
-	                		myPolyLat.push(parseFloat(rowContent[1].replaceAll("\"", "")));
+	                		studentCount.push(rowContent[1]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("addLng = "+ rowContent[2]);
+	                	//console.log("address = "+ rowContent[2]);
 	                	if (rowContent[2] != ""){
-                			markerLng.push(parseFloat(rowContent[2].replaceAll("\"", "")));
+                			pickupAddress.push(rowContent[2]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("addLat = "+ rowContent[3]);
+	                	//console.log("road = "+ rowContent[3]);
 	                	if (rowContent[3] != ""){
-                			markerLat.push(parseFloat(rowContent[3].replaceAll("\"", "")));
+                			roadName.push(rowContent[3]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("cluster = "+ rowContent[4]);
-	                	if (rowContent[4] != ""){
-                			cluster.push(parseFloat(rowContent[4].replaceAll("\"", "")));
+	                	console.log("longitude = "+ rowContent[4]);
+	                	if (rowContent[4] == 0){
+							console.log("Needs geocoding");
+							
+							if (geoCounter < 25){
+								initGeoCode(rowContent[2], count);
+								geoCounter++;
+							}
+							else{
+								setTimeout(initGeoCode(rowContent[2], count), 2000);
+							}
+							console.log("lngPlaceholder: "+ lngPlaceholder);
+							//rowContent[4] = lngPlaceholder;
+							console.log("rowContent[4]: "+ rowContent[4]);
+							
+							console.log("latPlaceholder: "+ latPlaceholder);
+							rowContent[5] = latPlaceholder;
+							console.log("rowContent[5]: "+ rowContent[5]);
+							
+							markerLng.push(rowContent[4]);
+							markerLat.push(rowContent[5]);
+						}
+	                	else if (rowContent[4] != "" || rowContent[4] != "0" || rowContent[4] != 0){
+							if (rowContent[4].substr(0, 1) === "-"){
+								rowContent[4] = rowContent[4].slice(0, 3) + "." + rowContent[4].slice(3);
+							}
+							else if(rowContent[4] != "Longitude")
+							{
+								rowContent[4] = rowContent[4].slice(0, 2) + "." + rowContent[4].slice(2);
+							}
+                			markerLng.push(rowContent[4]);//.replaceAll("\"", ""));
+	                	}
+	                	console.log("latitude = "+ rowContent[5]);
+	                	if (rowContent[5] != "" || rowContent[5] != "0" || rowContent[5] != 0){
+	                		
+	                		if (rowContent[5].substring(0, 1) === "-"){
+								rowContent[5] = rowContent[5].slice(0, 3) + "." + rowContent[5].slice(3);
+							}
+							else if(rowContent[5] != "Latitude\r")
+							{
+								rowContent[5] = rowContent[5].slice(0, 2) + "." + rowContent[5].slice(2);
+							}
+	                		
+                			markerLat.push(rowContent[5]);//.replaceAll("\"", ""));
 	                	}
 	               }
 	                //loop throw all columns of a row
@@ -109,10 +160,6 @@
 	            console.log("Removed Labels!");
 		    	removeLabels();
 		    	 
-		    	const unique = [...new Set(cluster)];
-		    	for(let i = 0; i < unique; i++){
-					clusterPolygons[i] = unique[i];
-		    	}
 	        }
 	         //call file reader onload
 	         
@@ -132,7 +179,44 @@
 	    return false;
 	}
 	//---------------------------------------------------------------------------
+	var geocoder;
+	function initGeoCode(addr, index){
+		geocoder = new google.maps.Geocoder();
+		getCoordFromGoogle(addr, index, updateTable());
+	}
 	
+	function getCoordFromGoogle(addr, index){
+		let latlng;
+		if (geocoder){
+			geocoder.geocode({ 'address': addr}, function(results, status){
+		    	if (status == 'OK') {
+		        	latlng = results[0].geometry.location;
+		        	
+		        	const calledLatLng = {
+						index: index,
+						lat: latlng.lat().toString(),
+						lng: latlng.lng().toString(),
+		        	};
+		        	
+		        	callbackData.push(calledLatLng);
+		        	updateTable();
+		        	//latPlaceholder = latlng.lat().toString();
+		        	//lngPlaceholder = latlng.lng().toString();
+		        	//console.log("**geocoded is: "+latlng);
+		        	//console.log("**lat: " + latPlaceholder + " DT: " + typeof(latPlaceholder));
+		        	//console.log("**lng: " + lngPlaceholder + " DT: " + typeof(lngPlaceholder));
+		        } else {
+		          console.log('Geocode was not successful for the following reason: ' + status);
+		        }
+		      
+		      });
+		}
+	}
+	
+	function updateTable(){
+		geoCounter--;
+		console.log("current size of callbackData is: "+ callbackData.length);
+	}
 	
 
 	let map;
@@ -318,12 +402,13 @@
 	
 	//remove labels from .csv file
 	function removeLabels(){
-		
-		myPolyLat.splice(0,1);
-		myPolyLng.splice(0,1);
-		markerLat.splice(0,1);
-		markerLng.splice(0,1);
-		cluster.splice(0,1);
+
+		studentId.splice(0,4);
+		studentCount.splice(0,4);
+		pickupAddress.splice(0,4);
+		roadName.splice(0,4);
+		markerLng.splice(0,4);
+		markerLat.splice(0,4);
 	}
 	function showPaths(path){
 		//for (let i=0;i<path.getLength();i++){
@@ -338,11 +423,10 @@
 	</script>
 	
 <meta charset="ISO-8859-1">
-<title>Polygons and Routing</title>
+<title>Student Routing</title>
 </head>
 <body>
-<h1>Polygons with Clustered Routes</h1>
-
+<h1>Bus Routing for Students</h1>
 	<hr>
 	
 	<div>
@@ -351,11 +435,11 @@
 	</form>
 		
 	<form action="/polyrouting">
-			<button type="submit" disabled>To Polygon and Clustering</button>
+			<button type="submit">To Polygon and Clustering</button>
 		</form>
 	
 	<form action="/bus-routing-students">
-			<button type="submit">Bus Routing for Students</button>
+			<button type="submit" disabled>Bus Routing for Students</button>
 		</form>
 	</div>
 	

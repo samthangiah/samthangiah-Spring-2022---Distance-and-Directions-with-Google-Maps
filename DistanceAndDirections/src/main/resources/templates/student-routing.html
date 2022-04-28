@@ -1,134 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
-	
+
 	<style>
 	#map{
 		height: 600px;
 		width: 100%;
 	}
+	
+	.xcel{
+		height: 250px;
+		width: 100%;
+		overflow-y: scroll;
+	}
+	
 	#legend {
     	font-family: Arial, sans-serif;
    		background: #fff;
     	padding: 10px;
     	margin: 10px;
     	border: 3px solid #000;
-    }
-    
-	}
-	
-	.Q_Head
-	{
-	
-	}
-	.NAV_Table
-	{ 
-		border-spacing: 5px;
-	}
-	
-	.NAV
-	{
-		height: 50px;
-		width: 100%;
-		background-color: #006747;
-	}
-	.content-table
-    {
-        border-collapse: collapse;
-        margin: 25px 0; Spaces between content are set
-        font-size: 0.9em;
-        width: 100%
-        border-radius: 5px 5px 0 0;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-        height: 200px;
-		overflow-y: scroll;
-    }
-
-    .content-table thead tr
-    {
-        background-color: #006747;
-        color: #ffffff;
-        text-align: left
-        font-weight: bold;
-    }
-
-    .content-table th
-    {
-        padding: 12px 15px;
-    }
-    
-    .content-table td
-    {
-        padding: 12px 15px;
-    }
-
-    .content-table tbody tr
-    {
-        border-bottom: 1px solid #dddddd;
-    }
-
-    .content-table tbody tr:nth-of-type(even)
-    {
-        background-color: #f3f3f3;
-    }
-
-    .content-table tbody tr:last-of-type
-    {
-        border-bottom: 2px solid #006747;
-    }
-
-    .content-table tbody tr.active-row
-    {
-        font-weight: bold;
-        color: #00s747;
-    }
-    
-    .highlight{
-		background: #ddd;
-	}
-    
-    .scrollTable{
-    	border: 10px #006747;
-		height: 200px;
-		overflow-y: scroll;
-	}
-	
-	body
-	{
-		font-family: 'Fredoka One', cursive;
-	}
-	li
-	{
-		display: inline;
-	}
-	ul
-	{
-		display: inline;
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-	}
-	
-
+  }
 	</style>
 	
 	<script> 
 	//var table; // = document.getElementById("myTable");
-	const myPolyLat = [];
-	const myPolyLng = [];
-	const markerLat = [];
+	const studentId = [];
+	const studentCount = [];
+	const pickupAddress = [];
+	const roadName = [];
 	const markerLng = [];
-	const cluster = [];
-	const clusterPolygons = [];
+	const markerLat = [];
+	let area;
+	let latPlaceholder = "";
+	let lngPlaceholder = "";
+	// [row of coordinates(index)][lng][lat]
+	const callbackData = [];
 	//-------------------------------------------------------------------
 	//Sourced largely from https://qawithexperts.com/article/javascript/read-csv-file-in-javascript-and-html5-filereader-multiple-wa/238
 	//read in csv file, format to html <table>
-	
+	var geoCounter = 0;
 	function processFile() {
+		
 	    var fileSize = 0;
 	    //get file
 	    var theFile = document.getElementById("myFile");
@@ -150,7 +63,9 @@
 	            var lines = content.split("\n");
 	            //loop all rows
 	            console.log("count="+lines.length)
-	            for (var count = 0; count < lines.length; count++) {
+	            //starts at data (not Title or initial empty cells)
+	            //decided by provided .csv format
+	            for (var count = 3; count < lines.length; count++) {
 	                //create a tr element
 	                var row = document.createElement("tr");
 	                //console.log("#1: " + row);
@@ -160,24 +75,67 @@
 	               if(count != lines.length-1){
 	                	
 	            	   //Load content into arrays
+	            	   //easier to use with maps info
+	            	   //console.log("id = "+ rowContent[0]);
 	                	if (rowContent[0] != ""){
-	                		myPolyLng.push(parseFloat(rowContent[0].replaceAll("\"", "")));
+	                		studentId.push(rowContent[0].replaceAll("\"", ""));
 	                	}
-	                	//console.log("polyLat = "+ rowContent[1]);
+	                	//console.log("count = "+ rowContent[1]);
 	                	if (rowContent[1] != "" && rowContent[1] != " " && rowContent[1] != null){
-	                		myPolyLat.push(parseFloat(rowContent[1].replaceAll("\"", "")));
+	                		studentCount.push(rowContent[1]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("addLng = "+ rowContent[2]);
+	                	//console.log("address = "+ rowContent[2]);
 	                	if (rowContent[2] != ""){
-                			markerLng.push(parseFloat(rowContent[2].replaceAll("\"", "")));
+                			pickupAddress.push(rowContent[2]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("addLat = "+ rowContent[3]);
+	                	//console.log("road = "+ rowContent[3]);
 	                	if (rowContent[3] != ""){
-                			markerLat.push(parseFloat(rowContent[3].replaceAll("\"", "")));
+                			roadName.push(rowContent[3]);//.replaceAll("\"", ""));
 	                	}
-	                	//console.log("cluster = "+ rowContent[4]);
-	                	if (rowContent[4] != ""){
-                			cluster.push(parseFloat(rowContent[4].replaceAll("\"", "")));
+	                	console.log("longitude = "+ rowContent[4]);
+	                	if (rowContent[4] == 0){
+							console.log("Needs geocoding");
+							
+							if (geoCounter < 25){
+								initGeoCode(rowContent[2], count);
+								geoCounter++;
+							}
+							else{
+								setTimeout(initGeoCode(rowContent[2], count), 2000);
+							}
+							console.log("lngPlaceholder: "+ lngPlaceholder);
+							//rowContent[4] = lngPlaceholder;
+							console.log("rowContent[4]: "+ rowContent[4]);
+							
+							console.log("latPlaceholder: "+ latPlaceholder);
+							rowContent[5] = latPlaceholder;
+							console.log("rowContent[5]: "+ rowContent[5]);
+							
+							markerLng.push(rowContent[4]);
+							markerLat.push(rowContent[5]);
+						}
+	                	else if (rowContent[4] != "" || rowContent[4] != "0" || rowContent[4] != 0){
+							if (rowContent[4].substr(0, 1) === "-"){
+								rowContent[4] = rowContent[4].slice(0, 3) + "." + rowContent[4].slice(3);
+							}
+							else if(rowContent[4] != "Longitude")
+							{
+								rowContent[4] = rowContent[4].slice(0, 2) + "." + rowContent[4].slice(2);
+							}
+                			markerLng.push(rowContent[4]);//.replaceAll("\"", ""));
+	                	}
+	                	console.log("latitude = "+ rowContent[5]);
+	                	if (rowContent[5] != "" || rowContent[5] != "0" || rowContent[5] != 0){
+	                		
+	                		if (rowContent[5].substring(0, 1) === "-"){
+								rowContent[5] = rowContent[5].slice(0, 3) + "." + rowContent[5].slice(3);
+							}
+							else if(rowContent[5] != "Latitude\r")
+							{
+								rowContent[5] = rowContent[5].slice(0, 2) + "." + rowContent[5].slice(2);
+							}
+	                		
+                			markerLat.push(rowContent[5]);//.replaceAll("\"", ""));
 	                	}
 	               }
 	                //loop throw all columns of a row
@@ -202,10 +160,6 @@
 	            console.log("Removed Labels!");
 		    	removeLabels();
 		    	 
-		    	const unique = [...new Set(cluster)];
-		    	for(let i = 0; i < unique; i++){
-					clusterPolygons[i] = unique[i];
-		    	}
 	        }
 	         //call file reader onload
 	         
@@ -225,7 +179,44 @@
 	    return false;
 	}
 	//---------------------------------------------------------------------------
+	var geocoder;
+	function initGeoCode(addr, index){
+		geocoder = new google.maps.Geocoder();
+		getCoordFromGoogle(addr, index, updateTable());
+	}
 	
+	function getCoordFromGoogle(addr, index){
+		let latlng;
+		if (geocoder){
+			geocoder.geocode({ 'address': addr}, function(results, status){
+		    	if (status == 'OK') {
+		        	latlng = results[0].geometry.location;
+		        	
+		        	const calledLatLng = {
+						index: index,
+						lat: latlng.lat().toString(),
+						lng: latlng.lng().toString(),
+		        	};
+		        	
+		        	callbackData.push(calledLatLng);
+		        	updateTable();
+		        	//latPlaceholder = latlng.lat().toString();
+		        	//lngPlaceholder = latlng.lng().toString();
+		        	//console.log("**geocoded is: "+latlng);
+		        	//console.log("**lat: " + latPlaceholder + " DT: " + typeof(latPlaceholder));
+		        	//console.log("**lng: " + lngPlaceholder + " DT: " + typeof(lngPlaceholder));
+		        } else {
+		          console.log('Geocode was not successful for the following reason: ' + status);
+		        }
+		      
+		      });
+		}
+	}
+	
+	function updateTable(){
+		geoCounter--;
+		console.log("current size of callbackData is: "+ callbackData.length);
+	}
 	
 
 	let map;
@@ -411,12 +402,13 @@
 	
 	//remove labels from .csv file
 	function removeLabels(){
-		
-		myPolyLat.splice(0,1);
-		myPolyLng.splice(0,1);
-		markerLat.splice(0,1);
-		markerLng.splice(0,1);
-		cluster.splice(0,1);
+
+		studentId.splice(0,4);
+		studentCount.splice(0,4);
+		pickupAddress.splice(0,4);
+		roadName.splice(0,4);
+		markerLng.splice(0,4);
+		markerLat.splice(0,4);
 	}
 	function showPaths(path){
 		//for (let i=0;i<path.getLength();i++){
@@ -431,48 +423,40 @@
 	</script>
 	
 <meta charset="ISO-8859-1">
-<title>Polygons and Clusters</title>
+<title>Student Routing</title>
 </head>
 <body>
-	<div class="NAV">
-
-	<table class="NAV_Table">
-		<tr>
-			<th style="width:50px"></th>
-			<th style="vertical-align: middle">|</th>
-			<th style="margin:15px;vertical-align: middle"><form action="/distance-matrix"><button type="submit">Directions</button></form></th>
-			<th style="vertical-align: middle">|</th>
-			<th style="margin:15px;vertical-align: middle"><form action="/polyrouting"><button type="submit">Clustering</button></form></th>
-			<th style="vertical-align: middle">|</th>
-			<!-- <th style="margin:15px;vertical-align: middle"><button type="button">Routing</button></th>
-			<th style="vertical-align: middle">|</th>
-			<th style="margin:15px;vertical-align: middle"><form action="/logs"><button type="submit">Logs</button></form></th>
-			<th style="vertical-align: middle">|</th>
-			<th style="margin:15px;vertical-align: middle"><form action="/whychooseus"><button type="submit">Why Choose Us?</button></form></th>
-			<th style="vertical-align: middle">|</th>
-		--></tr>
-	</table>
-
-</div>
-<h1>Polygons with Clustered Routes</h1>
-
-	<hr style="color:#006747">
-
+<h1>Bus Routing for Students</h1>
+	<hr>
+	
+	<div>
+	<form action="/distance-matrix">
+			<button type="submit">To Distance and Directions</button>
+	</form>
+		
+	<form action="/polyrouting">
+			<button type="submit">To Polygon and Clustering</button>
+		</form>
+	
+	<form action="/bus-routing-students">
+			<button type="submit" disabled>Bus Routing for Students</button>
+		</form>
+	</div>
 	
 	<p>Upload or select <i>.csv</i> file</p>
 	<input id="myFile" type="file">
-		<button id="process">Process</button> <button id="polygon">Show Area Polygon</button><button onClick="window.location.reload();">Refresh Map</button><button id="markerToggle">Toggle Markers</button>
-		<div  class="content-table">
-		<table id="myTable" class="content-table"></table>
-		<div id="dvCSV" class="content-table"></div>
+		<button id="process">Process</button>
+		<div  class="xcel">
+		<table id="myTable" border=".5" bordercolor="#A9A9A9"></table>
+		<div id="dvCSV"></div>
 		</div>
 	
 	
 	<div>
         <h2>My Map</h2>
-       
-       
-        <hr style="color:#006747">
+        <button id="polygon">Show Area Polygon</button>
+        <button id="markerToggle">Toggle Markers</button>
+        <hr>
         	<div id="legend"><h2>Legend</h2></div>
         	<div id="map"></div>
         	

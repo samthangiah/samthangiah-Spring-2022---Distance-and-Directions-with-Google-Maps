@@ -158,7 +158,7 @@ public class API_DistanceMatrix {
 				inChannel.close();
 		}
 			System.out.println("Is Hitting Table");
-			System.out.println("Storing Ori: " + orig + " Des: " + " Distance: " + distance);
+			System.out.println("Storing Ori: " + orig + " Des: " + dest + " Distance: " + distance);
 			dt.add(orig, dest, distance);
 			dt.getDataObject(orig, dest).setDistance(distance);
 			dt.add(dest, orig, distance);

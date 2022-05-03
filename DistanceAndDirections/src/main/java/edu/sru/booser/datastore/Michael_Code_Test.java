@@ -1,13 +1,40 @@
 package edu.sru.booser.datastore;
 import java.util.regex.Pattern;
+
+import edu.sru.bayne.DistanceAndDirections.GeoGrabber;
+
+import java.io.IOException;
 import java.util.regex.Matcher;
 
 public class Michael_Code_Test {
 
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
+		String in3 = "322 N McKean Street Butler PA";
+		GeoGrabber atg = new GeoGrabber();
+		atg.fetchCoordinatesFromAddress(atg.buildFromAddress(in3));
 		
+		
+		String in1 = atg.getLat();
+		String in2 = atg.getLng();
+		System.out.println("Lat: " + in1 + " Lng: " + in2);
+		GeoGrabber gtg = new GeoGrabber();
+		gtg.fetchAddressFromCoordinates(gtg.buildFromCoordinates(in1, in2));
+		if(gtg.getAddress() == "") {
+			System.out.println("Add is Null");
+		}
+		System.out.println("Address is " + gtg.getAddress());
+		gtg.fetchAddressFromCoordinates(gtg.buildFromAddress(in3));
+		//System.out.println("Address is " + gtg.getAddress());
+		
+		GeoGrabber t4 = new GeoGrabber();
+		String tin = in1+in2;
+		t4.fetchCoordinatesFromAddress(gtg.buildFromAddress(tin));
+		System.out.println("Test 4: " + t4.getLat() + t4.getLng());
+		
+		
+		/*
 		String Blank = "            ";
 		Blank.strip();
 		Blank = Blank.replaceAll("\\s", "");

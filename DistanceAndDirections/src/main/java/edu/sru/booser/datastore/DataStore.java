@@ -2,6 +2,9 @@ package edu.sru.booser.datastore;
 import java.io.IOException;
 import java.util.Vector;
 
+import edu.sru.booser.GoogleAPIRoadsData.Hash.DataController;
+import edu.sru.booser.GoogleAPIRoadsData.Hash.Table;
+
 /**
  * Holds Data for Maps Queries
  * Stores the starting and ending locations

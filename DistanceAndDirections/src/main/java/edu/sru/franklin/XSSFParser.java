@@ -46,7 +46,7 @@ public  class XSSFParser {
 			
 			//the output string is currently line delimited by carriage returns and the location pairs are tab delimited
 			output = extractor.getText();
-			
+			extractor.close();
 		}
 		catch(IOException e) {
 			//there should probably be better error handling than this idk...

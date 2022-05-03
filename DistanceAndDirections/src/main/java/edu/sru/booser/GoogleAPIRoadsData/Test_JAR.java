@@ -2,11 +2,17 @@ package edu.sru.booser.GoogleAPIRoadsData;
 
 import java.io.IOException;
 
+import edu.sru.booser.GoogleAPIRoadsData.Hash.DataController;
+import edu.sru.booser.GoogleAPIRoadsData.Hash.Table;
+import edu.sru.booser.GoogleAPIRoadsData.Hash.XSSFParser;
 import edu.sru.booser.GoogleAPIRoadsData.Keys.KEYS;
 import edu.sru.booser.GoogleAPIRoadsData.Log.LogUtil;
 
 public class Test_JAR 
 {
+	private static Table dt;
+	private static DataController dc = new DataController();
+
 	
 	public static void main(String args[]) throws IOException, InterruptedException
 	{
@@ -16,12 +22,34 @@ public class Test_JAR
 		
 		//set API Keys
 		LogUtil.CLEARLog();
-		KEYS.setFileKeyDist("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleDistanceKey.txt");
-		KEYS.setFileKeyDir("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleDirectionsKey.txt");
-		KEYS.setFileKeyGeo("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleGeoCodeKey.txt");
+							 //AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s
+		KEYS.setStringKeyDist("AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s");
+		KEYS.setStringKeyDir("AIzaSyAStw6XHaUsvg_-LMDrOPGRl0ubLZi9aZ4");
+		KEYS.setStringKeyGeo("AIzaSyD390VrMYSzUckUBYiWeXy2ZvVDrNtWUPg");
 		LogUtil.PRINTLog();
 		System.out.println(KEYS.getKeyDist());
 		
+		//Table Set-up
+		dc.readFromTextFile();
+		dt = dc.getTable();
+		//XSSFParser.booserParser("/home/michael/Desktop/Addresses.xlsx", dc, dt);
+		
+		API_DistanceMatrix.getDistance("2575 Us Hwy 43, Winfield AL 35594", "777 Brockton Avenue, Abington MA 2351", dc, dt);
+		
+		/*
+		//HashTest
+		DataStore hashTest = new DataStore(LocS, LocE, dc, dt);
+		hashTest.getDistMiles();
+		System.out.println("Distance 1 = " + hashTest.getDistMiles());
+		
+		DataStore hashTest2 = new DataStore(LocS, LocE, dc, dt);
+		hashTest2.getDistMiles();
+		System.out.println("Distance 2 = " + hashTest2.getDistMiles());
+		
+		System.out.println(API_DistanceMatrix.getDistance(LocS, LocE, dc, dt));
+		*/
+		
+		/*
 		//Requires Input Formatting
 		//Objective A: Distance between two points (Lat/Lng)
 		System.out.println("*****************************************\nStarting: Distance between points (Lat/Lng)");
@@ -123,7 +151,7 @@ public class Test_JAR
 			API_Directions.getDirections(E3.getInputStart(),E3.getInputEnd(),E3.Holder);
 			System.out.println(E3.Holder.toString());
 		System.out.println("Ending: Directions between to points (Zip)\n*****************************************");
-		
+		*/
 		
 	}
 	

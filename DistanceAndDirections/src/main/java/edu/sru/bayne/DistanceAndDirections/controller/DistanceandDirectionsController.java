@@ -61,11 +61,11 @@ public class DistanceandDirectionsController{
 		System.out.println("Called meme");
 		return"/whychooseus";
 	}
-	Log l = new Log();
+	//Log l = new Log();
 	@RequestMapping("/logs")
-	public String logs(Model model) throws IOException
+	public String logs() throws IOException
 	{
-		model.addAttribute("logs", l);
+		//model.addAttribute("logs", l);
 		return"/logs";
 	}
 	

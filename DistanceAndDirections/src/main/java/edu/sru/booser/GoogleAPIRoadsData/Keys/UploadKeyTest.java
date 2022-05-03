@@ -8,8 +8,9 @@ import edu.sru.booser.GoogleAPIRoadsData.Log.LogUtil;
 
 public class UploadKeyTest {
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, InterruptedException
 	{
+		/*
 		DataStore Test = new DataStore("Butler_PA", "SlipperyRock_PA");
 		LogUtil.CLEARLog();
 		KEYS.setFileKeyDist("C:\\Users\\Michael Booser\\Desktop\\ExamplePath\\ExampleDistanceKey.txt");
@@ -21,7 +22,7 @@ public class UploadKeyTest {
 		LogUtil.logEvent("HELP");
 		LogUtil.PRINTLog();
 		LogUtil.CLEARLog();
-		
+		*/
 		
 	}
 }

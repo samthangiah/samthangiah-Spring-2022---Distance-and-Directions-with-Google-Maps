@@ -56,6 +56,7 @@ public class API_GeoCode {
 		url += getAddress().replaceAll(" ", "+");
 		url += "&key=";
 		url += KEYS.getKeyGeo();
+		//For Testing System.out.println(url);
 		
 		return url;
 	}
@@ -66,6 +67,7 @@ public class API_GeoCode {
         lat = latIn;
         lng = lngIn;
         url += lat + "," + lng + "&key=" + KEYS.getKeyGeo();
+        //For Testing System.out.println(url);
         return url;
 
     }

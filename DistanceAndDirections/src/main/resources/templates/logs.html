@@ -7,6 +7,22 @@
 	<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet"> 
 
 </head>
+<style>
+	.NAV_Table
+	{ 
+		border-spacing: 5px;
+	}
+	.NAV
+	{
+		height: 50px;
+		width: 100%;
+		background-color: #006747;
+	}
+		body
+	{
+		font-family: 'Fredoka One', cursive;
+	}
+</style>
 <body>
 	<div class="NAV">
 
@@ -28,7 +44,15 @@
 	</table>
 	</div>
 	<div>
-		<h1>System Log</h1><form action="PringLogs"><button type="submit">Print Logs</button></form><form action="ClearLogs"><button type="submit">Clear Logs></button></form>	
+		<table>
+			<tr>
+				<th><h1>System Log</h1><form action="PringLogs"></th>
+				<th><button type="button">Print Logs</button></th>
+				<th><button type="button">Clear Logs</button></th>
+			</tr>
+		</table>
+
+		
 		<hr style="color:006747">
 	</div>
 	<div id=logDisplay th:text="${logs.PRINTLog()}">

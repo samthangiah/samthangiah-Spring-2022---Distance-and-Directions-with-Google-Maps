@@ -3,6 +3,9 @@ package edu.sru.booser.GoogleAPIRoadsData;
 import java.io.IOException;
 import java.util.Vector;
 
+import edu.sru.booser.GoogleAPIRoadsData.Hash.DataController;
+import edu.sru.booser.GoogleAPIRoadsData.Hash.Table;
+
 /**
  * Holds Data for Maps Queries
  * Stores the starting and ending locations
@@ -61,11 +64,12 @@ public class DataStore {
 	 * 
 	 * @param lS route starting location
 	 * @param lE route ending location
+	 * @throws InterruptedException 
 	 */
-	public DataStore(String lS, String lE) {
+	public DataStore(String lS, String lE, DataController dc, Table dt) throws InterruptedException {
 		this.setInputStart(lS);
 		this.setInputEnd(lE);
-		this.setDistMiles(this.calcDistance());
+		this.setDistMiles(this.calcDistance(dc, dt));
 		try {
 			API_Directions.getDirections(lS, lE, this.Holder);
 		} catch (IOException e) {
@@ -102,11 +106,12 @@ public class DataStore {
 	 * Gets a distance from DistanceMatrixAPI.java using data from this object
 	 * 
 	 * @return returns distance in miles
+	 * @throws InterruptedException 
 	 */
-	public float calcDistance() {
+	public float calcDistance(DataController dc, Table dt) throws InterruptedException {
 		float value = -1;
 				try {
-		value = API_DistanceMatrix.getDistance(this.getInputStart(), this.getInputEnd());
+		value = API_DistanceMatrix.getDistance(this.getInputStart(), this.getInputEnd(), dc, dt);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
